@@ -21,9 +21,26 @@ ready(function() {
 		async function startThemeEngine() {
 			const htmlEl = document.documentElement;
 			const STORAGE_KEY = "geo_refusal_timestamp";
-			const SUN_CACHE_KEY = 'cached_sun_times';
+			const SUN_CACHE_KEY = "cached_sun_times";
 			const FOUR_MONTHS_MS = 4 * 30 * 24 * 60 * 60 * 1000;
 			let sunData = { sunrise: null, sunset: null };
+			
+			const safeGetItem = (key) => {
+				try {
+					return localStorage.getItem(key);
+				} catch (e) {
+					console.warn("LocalStorage inaccessible ou corrompu");
+					return null;
+				}
+			};
+			
+			const safeSetItem = (key, value) => {
+				try {
+					localStorage.setItem(key, value);
+				} catch (e) {
+					console.error("Impossible d'écrire dans le LocalStorage", e);
+				}
+			};
 				
 			const updateCelestialPosition = () => {
 				const now = new Date();
@@ -60,18 +77,20 @@ ready(function() {
 
 			const fetchSunData = () => {
 				const today = new Date().toLocaleDateString('en-CA');
-				const lastRefusal = localStorage.getItem(STORAGE_KEY);
-				const isRefusalValid = lastRefusal && (Date.now() - lastRefusal < FOUR_MONTHS_MS);
+				const lastRefusal = safeGetItem(STORAGE_KEY);
+				const isRefusalValid = lastRefusal && (Date.now() - parseInt(lastRefusal) < FOUR_MONTHS_MS);
 				
-				const cached = localStorage.getItem(SUN_CACHE_KEY);
+				const cached = safeGetItem(SUN_CACHE_KEY);
 				if (cached) {
-					const parsed = JSON.parse(cached);
-					if (parsed.date === today) {
-						sunData.sunrise = new Date(parsed.sunrise);
-						sunData.sunset = new Date(parsed.sunset);
-						updateTheme();
-						return;
-					}
+					try {
+						const parsed = JSON.parse(cached);
+						if (parsed.date === today) {
+							sunData.sunrise = new Date(parsed.sunrise);
+							sunData.sunset = new Date(parsed.sunset);
+							updateTheme();
+							return;
+						}
+					} catch(e) { /* Erreur JSON parse, on continue */ }
 				}
 
 				if (!navigator.geolocation || isRefusalValid) {
@@ -88,7 +107,7 @@ ready(function() {
 						sunData.sunrise = new Date(json.results.sunrise);
 						sunData.sunset = new Date(json.results.sunset);
 						
-						localStorage.setItem(SUN_CACHE_KEY, JSON.stringify({
+						safeSetItem(SUN_CACHE_KEY, JSON.stringify({
 							date: today,
 							sunrise: sunData.sunrise,
 							sunset: sunData.sunset
@@ -100,7 +119,7 @@ ready(function() {
 					}
 				}, (err) => {
 					if (err.code === err.PERMISSION_DENIED) {
-						localStorage.setItem(STORAGE_KEY, Date.now());
+						safeSetItem(STORAGE_KEY, Date.now());
 					}
 					updateTheme();
 				});
