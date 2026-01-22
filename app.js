@@ -1,0 +1,226 @@
+ready(function() {	
+		const main = document.getElementById("main-container");
+        const hitbox = document.getElementById('cat-hitbox');
+        const container = document.getElementById('cat-container');
+		const cat = document.getElementById('cat');
+		const catBody = document.getElementById('cat-body');
+        const eyesNormal = document.getElementById('eyes-normal');
+        const eyesCross = document.getElementById('eyes-cross');
+		const eyeBlink = document.getElementById('eyes-blink');
+        const pupilL = document.getElementById('pupil-l');
+        const pupilR = document.getElementById('pupil-r');
+		const whiskersL = document.getElementById('whiskers-left');
+		const whiskersR = document.getElementById('whiskers-right');
+		const audio = document.getElementById('monAudio');
+		let isHiding = false;
+		
+		startThemeEngine();
+		
+		
+
+		async function startThemeEngine() {
+			const htmlEl = document.documentElement;
+			const STORAGE_KEY = "geo_refusal_timestamp";
+			const SUN_CACHE_KEY = 'cached_sun_times';
+			const FOUR_MONTHS_MS = 4 * 30 * 24 * 60 * 60 * 1000;
+			let sunData = { sunrise: null, sunset: null };
+				
+			const updateCelestialPosition = () => {
+				const now = new Date();
+				const totalSecondsToday = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+				const progress = totalSecondsToday / 86400;
+				const orbitAngle = (progress * 360) - 90;
+				const orbitEl = document.getElementById("celestial-orbit");
+				const moonEl = orbitEl.querySelector('.moon');
+				orbitEl.style.transform = `rotate(${orbitAngle}deg)`;
+				moonEl.style.transform = `translate(-50%,50%) rotate(${-orbitAngle}deg)`;
+			};
+
+			const updateTheme = () => {
+				const now = new Date();
+				let isDay;
+				if (sunData.sunrise && sunData.sunset) {
+					isDay = now >= sunData.sunrise && now <= sunData.sunset;
+				} else {
+					const h = now.getHours();
+					isDay = h >= 7 && h < 19;
+				}
+
+				const currentClass = isDay ? "day" : "night";
+				const oldClass = isDay ? "night" : "day";
+
+				if (!htmlEl.classList.contains(currentClass)) {
+					htmlEl.classList.replace(oldClass, currentClass) || htmlEl.classList.add(currentClass);
+				}
+				if(!htmlEl.classList.contains("open-page")) htmlEl.classList.add("open-page");
+				updateClock(now);
+				updateCelestialPosition();
+				setTimeout(updateTheme, 1000);
+			};
+
+			const fetchSunData = () => {
+				const today = new Date().toLocaleDateString('en-CA');
+				const lastRefusal = localStorage.getItem(STORAGE_KEY);
+				const isRefusalValid = lastRefusal && (Date.now() - lastRefusal < FOUR_MONTHS_MS);
+				
+				const cached = localStorage.getItem(SUN_CACHE_KEY);
+				if (cached) {
+					const parsed = JSON.parse(cached);
+					if (parsed.date === today) {
+						sunData.sunrise = new Date(parsed.sunrise);
+						sunData.sunset = new Date(parsed.sunset);
+						updateTheme();
+						return;
+					}
+				}
+
+				if (!navigator.geolocation || isRefusalValid) {
+					updateTheme();
+					return;
+				}
+
+				navigator.geolocation.getCurrentPosition(async (pos) => {
+					try {
+						const { latitude, longitude } = pos.coords;
+						const resp = await fetch(`https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`);
+						const json = await resp.json();
+						
+						sunData.sunrise = new Date(json.results.sunrise);
+						sunData.sunset = new Date(json.results.sunset);
+						
+						localStorage.setItem(SUN_CACHE_KEY, JSON.stringify({
+							date: today,
+							sunrise: sunData.sunrise,
+							sunset: sunData.sunset
+						}));
+
+						updateTheme();
+					} catch (e) {
+						updateTheme();
+					}
+				}, (err) => {
+					if (err.code === err.PERMISSION_DENIED) {
+						localStorage.setItem(STORAGE_KEY, Date.now());
+					}
+					updateTheme();
+				});
+			};
+			
+			function updateClock(d) {
+				const hours = String(d.getHours()).padStart(2, '0');
+				const minutes = String(d.getMinutes()).padStart(2, '0');
+				const time = `${hours}  ${minutes}`;
+				document.getElementById('time-display').textContent = time;	
+				const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+				document.getElementById('date-display').textContent = d.toLocaleDateString('fr-FR', options);
+			}
+
+			fetchSunData();
+		}
+
+		function randomEffect() {
+			let rndL = Math.random() < 0.5 ? 1 : -1;
+			let rndR = Math.random() < 0.5 ? 1 : -1;
+			let rndDelay = Math.random() * 3;
+			let timer = null;
+			if (!isHiding) {
+				eyesNormal.style.visibility = 'hidden';
+				eyeBlink.style.visibility = 'visible';
+				whiskersL.style.transform = `rotate(${rndL}deg)`;
+				whiskersR.style.transform = `rotate(${rndR}deg)`;
+				catBody.classList.remove('anim-active');
+				cat.style.setProperty('--value',`${rndDelay + 2}deg`);
+				setTimeout(() => {
+					if (!isHiding) {
+						eyesNormal.style.visibility = 'visible';
+						eyeBlink.style.visibility = 'hidden';
+						whiskersL.style.transform = "rotate(0deg)";
+						whiskersR.style.transform = "rotate(0deg)";
+						catBody.style.animationDelay = rndDelay + "s";
+						catBody.classList.add('anim-active');
+					}
+				}, 180);
+			}
+			setTimeout(randomEffect, Math.random() * 5000 + 2000);
+		}
+		randomEffect();
+		
+		let timeout= null;
+        hitbox.addEventListener('pointerenter', () => {
+			if(timeout) clearTimeout(timeout);
+			timeout = setTimeout(() => {
+				isHiding = true;
+				document.body.classList.add('is-hiding');
+				eyesNormal.style.visibility = 'hidden';
+				eyesCross.style.visibility = 'visible';
+				cat.style.animationPlayState = 'paused';
+			}, 100);
+        },false);
+
+        hitbox.addEventListener('pointerleave', () => {
+			if(timeout) clearTimeout(timeout);
+            isHiding = false;
+            document.body.classList.remove('is-hiding');
+            eyesNormal.style.visibility = 'visible';
+            eyesCross.style.visibility = 'hidden';
+			cat.style.animationPlayState = 'running';
+		},false);
+		
+        main.addEventListener('pointermove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+			
+			const sensitivity = 0.1;
+
+            const centerX = window.innerWidth / 2;
+            let moveX = (mouseX - centerX) * sensitivity;
+            moveX = Math.max(-100, Math.min(100, moveX));
+			
+			const centerY = window.innerHeight / 2;
+            let moveY = (mouseY - centerY) * sensitivity;
+            moveY = Math.max(-8, Math.min(8, moveY));
+			
+            container.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
+            
+            hitbox.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
+
+            if (!isHiding) {
+                updatePupil(pupilL, 80, 105, mouseX, mouseY);
+                updatePupil(pupilR, 140, 105, mouseX, mouseY);
+            }
+			cat.style.animationPlayState = 'paused';
+        },false);
+		
+		main.addEventListener('pointerout', () => {
+			pupilL.setAttribute('cx', 80);
+			pupilL.setAttribute('cy', 105);
+			pupilR.setAttribute('cx', 140);
+			pupilR.setAttribute('cy', 105);
+			container.style.transform = `translateX(0px) translateY(0px)`;
+			hitbox.style.transform = `translateX(0px) translateY(0px)`;
+			cat.style.animationPlayState = 'running';
+		},false);
+		
+        function updatePupil(pupil, originX, originY, mouseX, mouseY) {
+            const rect = container.getBoundingClientRect();
+            const eyeX = rect.left + originX;
+            const eyeY = rect.top + originY;
+            
+            const angle = Math.atan2(mouseY - eyeY, mouseX - eyeX);
+            const dist = Math.sqrt(Math.pow(mouseX-eyeX, 2) + Math.pow(mouseY-eyeY, 2));
+            
+            const maxMove = 8;
+            const move = Math.min(dist * 0.04, maxMove);
+
+            pupil.setAttribute('cx', originX + Math.cos(angle) * move);
+            pupil.setAttribute('cy', originY + Math.sin(angle) * move);
+        }
+});
+
+function ready(callback){
+	if (document.readyState!='loading') callback();
+	else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
+	else document.attachEvent('onreadystatechange', function(){
+		if (document.readyState=='complete') callback();
+	});
+}

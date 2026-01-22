@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>CAT</title>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="google" content="notranslate">
+	<meta http-equiv="cache-control" content="no-cache,max-age=0, must-revalidate">
+	<meta http-equiv="Pragma" Content="no-cache">
+	<meta http-equiv="Expires" Content="0">
+	<link rel="stylesheet" href="style.css" media="screen">
+</head>
+<body>
+	<div id="main-container">
+		<div class="orbit-wrapper" id="celestial-orbit">
+			<svg class="celestial-body sun" viewBox="0 0 24 24" width="100" height="100">
+				<circle cx="12" cy="12" r="6" fill="currentColor"/>
+				<g stroke="currentColor" stroke-width="1" stroke-linecap="round">
+					<line x1="12" y1="1"   x2="12" y2="6"/>
+					<line x1="12" y1="18"  x2="12" y2="23"/>
+					<line x1="1"  y1="12"  x2="6"  y2="12"/>
+					<line x1="18" y1="12"  x2="23" y2="12"/>
+					<line x1="5"   y1="5"   x2="8.5" y2="8.5"/>
+					<line x1="15.5" y1="15.5" x2="19"  y2="19"/>
+					<line x1="19"  y1="5"   x2="15.5" y2="8.5"/>
+					<line x1="8.5" y1="15.5" x2="5"   y2="19"/>
+				</g>
+			</svg>
+			<svg class="celestial-body moon" viewBox="0 0 24 24" width="65" height="65">
+				<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor"/>
+			</svg>
+		</div>
+		<div id="clock">
+			<div id="time-display">&ensp;&ensp;&ensp;&ensp;&ensp;</div>
+			<div id="date-display"></div>
+		</div>
+		<div class="cat-blocker">
+			<div class="patte patte-gauche">
+				<span class="d d-1"></span>
+				<span class="d d-2"></span>
+				<span class="d d-3"></span>
+			</div>
+			<div class="patte patte-droite">
+				<span class="d d-1"></span>
+				<span class="d d-2"></span>
+				<span class="d d-3"></span>
+			</div>
+		</div>
+		<div id="cat-queut"></div>
+		<div id="cat-global-container">
+			<div id="cat-hitbox"></div>
+			<div id="cat-container">
+				<svg id="cat" class="cat" viewBox="0 0 220 160">
+					<path id="cat-body" class="anim-active" d="M35,160 Q18,130 22,110 Q25,80 30,55 C35,20 60,10 80,45 L85,50 Q110,42 135,50 L140,45 C160,10 185,20 190,55 Q195,80 198,110 Q202,130 180,160" />
+					<g id="whiskers-left">
+							<path class="whisker" d="M80,125 Q25,100 10,108" />
+							<path class="whisker" d="M80,128 Q28,115 12,120" />
+							<path class="whisker" d="M80,130 Q32,130 18,135" />
+						</g>
+						<g id="whiskers-right">
+							<path class="whisker" d="M140,125 Q195,100 210,108" />
+							<path class="whisker" d="M140,128 Q192,115 208,120" />
+							<path class="whisker" d="M140,130 Q188,130 202,135" />
+						</g>
+					</g>
+					<g class="nose" transform="translate(110, 122) scale(2)">
+					  <path class="nose-one" d="M-5,0 L5,0 L0,4 Z" />
+					  <path class="nose-two" d="M0,4 L0,8 M0,8 Q-4,12 -8,8 M0,8 Q4,12 8,8" />
+					</g>
+					<g id="eyes-normal">
+						   <circle class="eye-white" cx="80" cy="105" r="16" />
+						   <circle id="pupil-l" class="pupil" cx="80" cy="105" r="6" />
+						   <circle class="eye-white" cx="140" cy="105" r="16" />
+						   <circle id="pupil-r" class="pupil" cx="140" cy="105" r="6" />
+					</g>
+					<g id="eyes-blink">
+						   <path class="eye-closed" d="M68,105 Q80,95 92,105" />
+						   <path class="eye-closed" d="M128,105 Q140,95 152,105" />
+					</g>
+					<g id="eyes-cross">
+						   <line x1="73" y1="98" x2="87" y2="112"/>
+						   <line x1="87" y1="98" x2="73" y2="112"/>
+						   <line x1="133" y1="98" x2="147" y2="112"/>
+						   <line x1="147" y1="98" x2="133" y2="112"/>
+					</g>
+				</svg>
+			</div>
+		</div>
+	</div>
+	<div class="horizon-blocker"></div>
+	<script defer src="app.js"></script>
+</body>
+</html>
