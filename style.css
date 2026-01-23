@@ -242,7 +242,7 @@
         }
 		
 		.open-page #cat-global-container{
-			bottom: 22%;
+			bottom: 28%;
 		}
 		
 		#cat-queut {
@@ -272,6 +272,8 @@
         }
 		
 		#cat {
+			position: absolute;
+			bottom: 0;
 			transform-origin: bottom;
 			transform-style: preserve-3d;
 			transform : rotateX(2deg);
@@ -379,10 +381,9 @@
 		
 		.orbit-wrapper {
 			position: relative;
-			width: 41vw; 
-			height: 41vw;
-			max-width: 800px;
-			max-height: 800px;
+			width: auto; 
+			height: 90%;
+			aspect-ratio : 1/1;
 			border-radius: 50%;
 			transform-origin: center center;
 			opacity: 0;
@@ -403,3 +404,16 @@
 		.moon {bottom: 0;}
 		
 		.open-page .orbit-wrapper {opacity: 1;}
+		
+@media only screen and (max-width: 720px) {
+	.orbit-wrapper {
+		width: 90%; 
+		height: auto;
+	}
+}
+
+@media only screen and (max-width: 560px) {
+	#clock {
+		top: 2%; 
+	}
+}
