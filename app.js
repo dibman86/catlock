@@ -62,7 +62,7 @@ ready(function() {
 					const h = now.getHours();
 					isDay = h >= 7 && h < 19;
 				}
-
+				
 				const currentClass = isDay ? "day" : "night";
 				const oldClass = isDay ? "night" : "day";
 
@@ -162,6 +162,7 @@ ready(function() {
 			}
 			setTimeout(randomEffect, Math.random() * 5000 + 2000);
 		}
+		
 		randomEffect();
 		
 		let timeout= null;
@@ -185,40 +186,66 @@ ready(function() {
 			cat.style.animationPlayState = 'running';
 		},false);
 		
-        main.addEventListener('pointermove', (e) => {
-            const mouseX = e.clientX;
-            const mouseY = e.clientY;
-			
-			const sensitivity = 0.1;
-
-            const centerX = window.innerWidth / 2;
-            let moveX = (mouseX - centerX) * sensitivity;
-            moveX = Math.max(-100, Math.min(100, moveX));
-			
-			const centerY = window.innerHeight / 2;
-            let moveY = (mouseY - centerY) * sensitivity;
-            moveY = Math.max(-8, Math.min(8, moveY));
-			
-            container.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
-            
-            hitbox.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
-
-            if (!isHiding) {
-                updatePupil(pupilL, 80, 105, mouseX, mouseY);
-                updatePupil(pupilR, 140, 105, mouseX, mouseY);
-            }
+		const showCrossEyes = () => {
+			isHiding = true;
+			document.body.classList.add('is-hiding');
+			eyesNormal.style.visibility = 'hidden';
+			eyesCross.style.visibility = 'visible';
 			cat.style.animationPlayState = 'paused';
-        },false);
-		
-		main.addEventListener('pointerout', () => {
+		};
+
+		const showNormalEyes = () => {
+			isHiding = false;
+			document.body.classList.remove('is-hiding');
+			eyesNormal.style.visibility = 'visible';
+			eyesCross.style.visibility = 'hidden';
+			cat.style.animationPlayState = 'running';
+		};
+
+		main.addEventListener('pointermove', (e) => {
+			const mouseX = e.clientX;
+			const mouseY = e.clientY;
+			const sensitivity = 0.1;
+			const centerX = window.innerWidth / 2;
+			const centerY = window.innerHeight / 2;
+			let moveX = Math.max(-100, Math.min(100, (mouseX - centerX) * sensitivity));
+			let moveY = Math.max(-8, Math.min(8, (mouseY - centerY) * sensitivity));
+			container.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
+			hitbox.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
+			const elementAtPoint = document.elementFromPoint(mouseX, mouseY);
+			const isOverHitbox = hitbox.contains(elementAtPoint);
+
+			if (isOverHitbox) {
+				if (!isHiding && !timeout) {
+					timeout = setTimeout(showCrossEyes, 100);
+				}
+			} else {
+				if (isHiding) {
+					if (timeout) { clearTimeout(timeout); timeout = null; }
+					showNormalEyes();
+				}
+			}
+
+			if (!isHiding) {
+				updatePupil(pupilL, 80, 105, mouseX, mouseY);
+				updatePupil(pupilR, 140, 105, mouseX, mouseY);
+			}
+				cat.style.animationPlayState = 'paused';
+		}, false);
+
+		const resetState = () => {
+			if (timeout) { clearTimeout(timeout); timeout = null; }
+			showNormalEyes();
 			pupilL.setAttribute('cx', 80);
 			pupilL.setAttribute('cy', 105);
 			pupilR.setAttribute('cx', 140);
 			pupilR.setAttribute('cy', 105);
 			container.style.transform = `translateX(0px) translateY(0px)`;
 			hitbox.style.transform = `translateX(0px) translateY(0px)`;
-			cat.style.animationPlayState = 'running';
-		},false);
+		};
+
+		main.addEventListener('pointerup', resetState);
+		main.addEventListener('pointerleave', resetState);
 		
         function updatePupil(pupil, originX, originY, mouseX, mouseY) {
             const rect = container.getBoundingClientRect();
