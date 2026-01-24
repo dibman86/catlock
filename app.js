@@ -11,13 +11,14 @@ ready(function() {
         const pupilR = document.getElementById('pupil-r');
 		const whiskersL = document.getElementById('whiskers-left');
 		const whiskersR = document.getElementById('whiskers-right');
+		const catQueut = document.getElementById('cat-queut');
 		const audio = document.getElementById('monAudio');
-		let isHiding = false;
+		let isHiding = false
+		
+		document.body.classList.add("ready");
 		
 		startThemeEngine();
 		
-		
-
 		async function startThemeEngine() {
 			const htmlEl = document.documentElement;
 			const STORAGE_KEY = "geo_refusal_timestamp";
@@ -125,13 +126,38 @@ ready(function() {
 				});
 			};
 			
+			function clockNumHere(divHere, numHere){
+			  let arrayClockOne = Array.from(document.querySelectorAll(".clockHere > "+divHere));
+			  for(let i=0; i<arrayClockOne.length; i++){
+				arrayClockOne[i].removeAttribute("class");
+				arrayClockOne[i].classList.add("num"+numHere+"Here");
+			  }
+			}
+			
 			function updateClock(d) {
-				const hours = String(d.getHours()).padStart(2, '0');
-				const minutes = String(d.getMinutes()).padStart(2, '0');
-				const time = `${hours}  ${minutes}`;
-				document.getElementById('time-display').textContent = time;	
-				const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-				document.getElementById('date-display').textContent = d.toLocaleDateString('fr-FR', options);
+				  const hours = String(d.getHours()).padStart(2, '0');
+				  const minutes = String(d.getMinutes()).padStart(2, '0');
+				  const seconds = String(d.getSeconds()).padStart(2, '0');
+				  
+				  clockNumHere("div:first-child", hours[0]);
+				  clockNumHere("div:nth-child(2)", hours[1]);
+				  
+				  clockNumHere("div:nth-child(4)", minutes[0]);
+				  clockNumHere("div:nth-child(5)", minutes[1]);
+				  
+				  clockNumHere("div:nth-child(7)", seconds[0]);
+				  clockNumHere("div:last-child", seconds[1]);
+				  
+				  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+				  document.getElementById('date-display').textContent = d.toLocaleDateString('fr-FR', options);
+				  
+				  if (minutes === "00") {
+						catQueut.style.animation = 'none';
+						catQueut.style.borderRadius = '50% 50% 0 0'
+				  } else {
+						catQueut.style.animationPlayState = 'remuer 2s ease-in-out infinite';
+						catQueut.style.borderRadius = '20px 20px 0 0'
+				  }
 			}
 
 			fetchSunData();
