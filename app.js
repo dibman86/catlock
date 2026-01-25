@@ -33,25 +33,51 @@ ready(function() {
 		}
 		
 		async function startThemeEngine() {
-			const htmlEl = document.documentElement;
 			const STORAGE_KEY = "geo_refusal_timestamp";
 			const SUN_CACHE_KEY = "cached_sun_times";
 			const FOUR_MONTHS_MS = 4 * 30 * 24 * 60 * 60 * 1000;
 			let sunData = { sunrise: null, sunset: null };
 			let currentDay = new Date().toISOString().split('T')[0];
+			let verif = false;
+			const staticHoursSunrise = 8;
+			const staticMinutesSunrise = 30;
+			const staticHoursSunset = 19;
+			const staticMinutesSunset = 00;
 			
 			const safeGetItem = (key) => {return localStorage.getItem(key);};
-			
 			const safeSetItem = (key, value) => {localStorage.setItem(key, value);};
 				
 			const updateCelestialPosition = (d) => {
-				const totalSecondsToday = (d.getHours() * 3600) + (d.getMinutes() * 60) + d.getSeconds();
-				const progress = totalSecondsToday / 86400;
-				const orbitAngle = (progress * 360) + 180;
 				const orbitEl = document.getElementById("celestial-orbit");
-				const moonEl = orbitEl.querySelector('.moon');
+
+				let sunrise, sunset;
+				const now = d.getTime();
+
+				if (verif) {
+					sunrise = sunData.sunrise.getTime();
+					sunset = sunData.sunset.getTime();
+				} else {
+					sunrise = new Date(d).setHours(staticHoursSunrise, 0, 0, 0);
+					sunset = new Date(d).setHours(staticHoursSunset, 0, 0, 0);
+				}
+
+				let orbitAngle;
+
+				if (now >= sunrise && now <= sunset) {
+					const dayProgress = (now - sunrise) / (sunset - sunrise);
+					orbitAngle = -90 + (dayProgress * 180);
+				} else {
+					const nextSunrise = sunrise + 86400000;
+					const nightProgress = (now < sunrise) ? (now + 86400000 - sunset) / (nextSunrise - sunset) : (now - sunset) / (nextSunrise - sunset);
+					orbitAngle = 90 + (nightProgress * 180);
+				}
+
 				orbitEl.style.transform = `rotate(${orbitAngle}deg)`;
-				moonEl.style.transform = `translate(-50%,50%) rotate(${-orbitAngle}deg)`;
+				
+				const moonEl = orbitEl.querySelector('.moon');
+				if (moonEl) {
+					moonEl.style.transform = `translate(-50%, -50%) rotate(${-orbitAngle}deg)`;
+				}
 			};
 			
 			function clockNumHere(divHere, numHere){
@@ -63,23 +89,20 @@ ready(function() {
 			}
 			
 			function updateClock(d) {
-				  const hours = String(d.getHours()).padStart(2, '0');
-				  const minutes = String(d.getMinutes()).padStart(2, '0');
-				  const seconds = String(d.getSeconds()).padStart(2, '0');
+
+				  clockNumHere("div:first-child", d.hours[0]);
+				  clockNumHere("div:nth-child(2)", d.hours[1]);
 				  
-				  clockNumHere("div:first-child", hours[0]);
-				  clockNumHere("div:nth-child(2)", hours[1]);
+				  clockNumHere("div:nth-child(4)", d.minutes[0]);
+				  clockNumHere("div:nth-child(5)", d.minutes[1]);
 				  
-				  clockNumHere("div:nth-child(4)", minutes[0]);
-				  clockNumHere("div:nth-child(5)", minutes[1]);
-				  
-				  clockNumHere("div:nth-child(7)", seconds[0]);
-				  clockNumHere("div:last-child", seconds[1]);
+				  clockNumHere("div:nth-child(7)", d.seconds[0]);
+				  clockNumHere("div:last-child", d.seconds[1]);
 				  
 				  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-				  document.getElementById('date-display').textContent = d.toLocaleDateString('fr-FR', options);
+				  document.getElementById('date-display').textContent = d.date;
 				  
-				  if (minutes === "00") {
+				  if (d.minutes === "00") {
 						catQueut.style.animation = 'none';
 						catQueut.style.borderRadius = '50% 50% 0 0'
 				  } else {
@@ -89,14 +112,22 @@ ready(function() {
 			}
 
 			const updateTheme = () => {
+				const htmlEl = document.documentElement;
 				const now = new Date();
+				const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+				const globalDataTime = {
+					'hours' : String(now.getHours()).padStart(2, '0'),
+					'minutes' : String(now.getMinutes()).padStart(2, '0'),
+					'seconds' : String(now.getSeconds()).padStart(2, '0'),
+					'date' : now.toLocaleDateString('fr-FR', options)
+				}
+				const time = `${globalDataTime.hours}  ${globalDataTime.minutes}`;
 				let isDay;
-				const verif = sunData.sunrise && sunData.sunset ? true : false;
+				verif = sunData.sunrise && sunData.sunset ? true : false;
 				if (verif) {
 					isDay = now >= sunData.sunrise && now <= sunData.sunset;
 				} else {
-					const h = now.getHours();
-					isDay = h >= 8 && h < 19;
+					isDay = time >= sunriseStr && time < sunsetStr;
 				}
 				
 				const currentClass = isDay ? "day" : "night";
@@ -109,7 +140,7 @@ ready(function() {
 				
 				if(!htmlEl.classList.contains("open-page")) htmlEl.classList.add("open-page");
 				
-				updateClock(now);
+				updateClock(globalDataTime);
 				updateCelestialPosition(now);
 				let timer = null;
 				if(timer) clearTimeout(timer)
