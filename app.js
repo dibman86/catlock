@@ -13,11 +13,23 @@ ready(function() {
 		const whiskersR = document.getElementById('whiskers-right');
 		const catQueut = document.getElementById('cat-queut');
 		const audio = document.getElementById('monAudio');
-		let isHiding = false
+		let isHiding = false;
+		let isonscreen = false;
 		
 		document.body.classList.add("ready");
 		
-		startThemeEngine();
+		const styleDay = () => {
+			eyesNormal.style.visibility = 'visible';
+			eyeBlink.style.visibility = 'hidden';
+			container.style.transform = `translateX(0px) translateY(0px) rotate(0deg)`;
+		}
+		
+		const styleNight = () => {
+			eyesNormal.style.visibility = 'hidden';
+			eyeBlink.style.visibility = 'visible';
+			cat.style.animationPlayState = 'paused';
+			container.style.transform = `translateX(0px) translateY(0px) rotate(-10deg)`;
+		}
 		
 		async function startThemeEngine() {
 			const htmlEl = document.documentElement;
@@ -91,8 +103,11 @@ ready(function() {
 
 				if (!htmlEl.classList.contains(currentClass)) {
 					htmlEl.classList.replace(oldClass, currentClass) || htmlEl.classList.add(currentClass);
+					htmlEl.classList.contains('night') ? styleNight() : styleDay();
 				}
+				
 				if(!htmlEl.classList.contains("open-page")) htmlEl.classList.add("open-page");
+				
 				updateClock(now);
 				updateCelestialPosition(now);
 				let timer = null;
@@ -102,7 +117,7 @@ ready(function() {
 					const todayStr = new Date().toISOString().split('T')[0];
 					if (todayStr !== currentDay && verif) {
 						console.log("Minuit est passé. Actualisation des données...");
-						currentDay = todayStr; 
+						currentDay = todayStr;
 						fetchSunData(false);
 					}
 				}, 1000);
@@ -115,7 +130,7 @@ ready(function() {
 					const cached = safeGetItem(SUN_CACHE_KEY);
 					if (cached) {
 						try {
-							const parsed = JSON.parse(cached);
+							const parsed = JSON.parse(cached);	
 							if (parsed.date === currentDay) {
 								sunData.sunrise = new Date(parsed.sunrise);
 								sunData.sunset = new Date(parsed.sunset);
@@ -166,16 +181,20 @@ ready(function() {
 			let rndDelay = Math.random() * 3;
 			let timer = null;
 			if (!isHiding) {
-				eyesNormal.style.visibility = 'hidden';
-				eyeBlink.style.visibility = 'visible';
+				if(isonscreen || !document.documentElement.classList.contains('night')){
+					eyesNormal.style.visibility = 'hidden';
+					eyeBlink.style.visibility = 'visible';
+				}
 				whiskersL.style.transform = `rotate(${rndL}deg)`;
 				whiskersR.style.transform = `rotate(${rndR}deg)`;
 				catBody.classList.remove('anim-active');
 				cat.style.setProperty('--value',`${rndDelay + 2}deg`);
 				setTimeout(() => {
 					if (!isHiding) {
-						eyesNormal.style.visibility = 'visible';
-						eyeBlink.style.visibility = 'hidden';
+						if(isonscreen || !document.documentElement.classList.contains('night')){
+							eyesNormal.style.visibility = 'visible';
+							eyeBlink.style.visibility = 'hidden';
+						}
 						whiskersL.style.transform = "rotate(0deg)";
 						whiskersR.style.transform = "rotate(0deg)";
 						catBody.style.animationDelay = rndDelay + "s";
@@ -189,26 +208,7 @@ ready(function() {
 		randomEffect();
 		
 		let timeout= null;
-        hitbox.addEventListener('pointerenter', () => {
-			if(timeout) clearTimeout(timeout);
-			timeout = setTimeout(() => {
-				isHiding = true;
-				document.body.classList.add('is-hiding');
-				eyesNormal.style.visibility = 'hidden';
-				eyesCross.style.visibility = 'visible';
-				cat.style.animationPlayState = 'paused';
-			}, 100);
-        },false);
 
-        hitbox.addEventListener('pointerleave', () => {
-			if(timeout) clearTimeout(timeout);
-            isHiding = false;
-            document.body.classList.remove('is-hiding');
-            eyesNormal.style.visibility = 'visible';
-            eyesCross.style.visibility = 'hidden';
-			cat.style.animationPlayState = 'running';
-		},false);
-		
 		const showCrossEyes = () => {
 			isHiding = true;
 			document.body.classList.add('is-hiding');
@@ -237,7 +237,8 @@ ready(function() {
 			hitbox.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
 			const elementAtPoint = document.elementFromPoint(mouseX, mouseY);
 			const isOverHitbox = hitbox.contains(elementAtPoint);
-
+			isonscreen = true;
+			
 			if (isOverHitbox) {
 				if (!isHiding && !timeout) {
 					timeout = setTimeout(showCrossEyes, 100);
@@ -252,19 +253,22 @@ ready(function() {
 			if (!isHiding) {
 				updatePupil(pupilL, 80, 105, mouseX, mouseY);
 				updatePupil(pupilR, 140, 105, mouseX, mouseY);
+				eyeBlink.style.visibility = 'hidden';
+				eyesNormal.style.visibility = 'visible';
 			}
-				cat.style.animationPlayState = 'paused';
+			cat.style.animationPlayState = 'paused';
 		}, false);
 
 		const resetState = () => {
-			if (timeout) { clearTimeout(timeout); timeout = null; }
+			if (timeout) { clearTimeout(timeout); timeout = null; };
+			isonscreen = false;
 			showNormalEyes();
 			pupilL.setAttribute('cx', 80);
 			pupilL.setAttribute('cy', 105);
 			pupilR.setAttribute('cx', 140);
 			pupilR.setAttribute('cy', 105);
-			container.style.transform = `translateX(0px) translateY(0px)`;
 			hitbox.style.transform = `translateX(0px) translateY(0px)`;
+			document.documentElement.classList.contains('night') ? styleNight() : styleDay();
 		};
 
 		main.addEventListener('pointerup', resetState);
@@ -284,6 +288,8 @@ ready(function() {
             pupil.setAttribute('cx', originX + Math.cos(angle) * move);
             pupil.setAttribute('cy', originY + Math.sin(angle) * move);
         }
+		
+		startThemeEngine();
 });
 
 function ready(callback){

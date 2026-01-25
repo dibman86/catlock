@@ -6,13 +6,13 @@
 			cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDMwIDMwIj4NCiAgPGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTEiIGZpbGw9IiMwMDAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIiAvPg0KPC9zdmc+DQoNCg0K"), auto;
 		}
 		
-		.day {
+		.open-page.day {
 			--color-bg : #fff;
 			--color-primary : #d4d4d4;
 			--color-secondary : #101010;
 		}
 		
-		.night {
+		.open-page.night {
 			--color-bg : #000;
 			--color-primary : #101010;
 			--color-secondary : #d4d4d4;
@@ -305,6 +305,15 @@
 			transition: bottom 0.5s ease-in-out 0.5s;
         }
 		
+		.open-page #cat-global-container{
+			bottom: 30%;
+		}
+		
+		.night #cat-global-container{
+			bottom: 30%!important;
+			transition:none;
+		}
+		
 		#cat-hitbox,#cat-container {
 			position: absolute;
 			right: 0;
@@ -313,9 +322,9 @@
         }
 		
         #cat-hitbox {
-			width: 360px;
-			height: 250px;
-			left: -30px;
+			width: 310px;
+			height: 200px;
+			left: -10px;
 			z-index: 30;
         }
 
@@ -332,10 +341,6 @@
 		.is-hiding #cat-container {
            bottom: -20%;
         }
-		
-		.open-page #cat-global-container{
-			bottom: 30%;
-		}
 		
 		#cat-queut {
 			position: absolute;
