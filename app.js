@@ -263,10 +263,12 @@ ready(function() {
 			const sensitivity = 0.1;
 			const centerX = window.innerWidth / 2;
 			const centerY = window.innerHeight / 2;
-			let moveX = Math.max(-100, Math.min(100, (mouseX - centerX) * sensitivity));
-			let moveY = Math.max(-8, Math.min(8, (mouseY - centerY) * sensitivity));
-			container.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
-			hitbox.style.transform = `translateX(${-moveX}px) translateY(${-moveY}px)`;
+			const maxX = 100;
+			const maxY = 8;
+			let moveX = Math.max(maxX * -1, Math.min(maxX, (mouseX - centerX) * sensitivity));
+			let moveY = Math.max(maxY * -1, Math.min(maxY, (mouseY - centerY) * sensitivity));
+			container.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
+			hitbox.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
 			const elementAtPoint = document.elementFromPoint(mouseX, mouseY);
 			const isOverHitbox = hitbox.contains(elementAtPoint);
 			isonscreen = true;
