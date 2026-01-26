@@ -502,7 +502,7 @@
 
 		.sun {top: 0;}
 
-		.moon {bottom: 0;}
+		.moon {top: 100%;}
 		
 		.open-page .orbit-wrapper {opacity: 1;}
 		
