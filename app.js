@@ -144,11 +144,10 @@ ready(function() {
 				updateCelestialPosition(now);
 				let timer = null;
 				if(timer) clearTimeout(timer)
-				timer = setTimeout((now) => {
+				timer = setTimeout(() => {
 					updateTheme();
 					const todayStr = new Date().toISOString().split('T')[0];
 					if (todayStr !== currentDay && verif) {
-						console.log("Minuit est passé. Actualisation des données...");
 						currentDay = todayStr;
 						fetchSunData(false);
 					}
