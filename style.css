@@ -432,8 +432,12 @@
 		#eyes-cross line, .eye-closed {
 			 stroke-width: 3;
 			 stroke-linecap: round;
-			 fill: none;
+			 fill: var(--color-secondary);
 		}
+		
+		/* .night .eye-closed {
+			 fill: none;
+		} */
 		 
 		#whiskers-left {
 			transform-origin: right;
