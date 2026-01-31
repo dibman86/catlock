@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 		:root{
 			--color-bg : #7c7c7c;
 			--color-hz : #5a5a5a;
@@ -21,7 +20,7 @@
 			--color-primary : #101010;
 			--color-secondary : #d4d4d4;
 		}
-		
+				
         body, html {
 			position: relative;
 			width: 100%;
@@ -33,15 +32,15 @@
 			background-color: var(--color-bg);
         }
 		
-		svg{display: none;}
-		
-		.ready svg{display: block;}
-		
 		body{
 			user-select: none;
 			pointer-events: none;
 			transition: pointer-events 0s .5s allow-discrete,background-color 1s ease;
         }
+				
+		svg{visibility: hidden;}
+		
+		.ready svg{visibility: visible;}
 		
 		#main-container{
 			display: flex;
@@ -72,6 +71,7 @@
 			padding: 4px;
 			border: 4px solid var(--color-secondary);
 			border-radius: 10px;
+			transition: background-color 1s ease,border-color 1s ease;
         }
 
         #time-display {
@@ -192,10 +192,7 @@
 			display: none;
 			opacity: 0;
 			transform: translateY(0px) rotateX(-90deg);
-			transition: 
-				transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-				opacity 0.1s ease,
-				display 0.1s ease allow-discrete;
+			transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),opacity 0.1s ease,display 0.1s ease allow-discrete;
 		}
 		
         #clock:hover #time-display {
@@ -259,6 +256,7 @@
 			border: 2px solid var(--color-secondary);
 			border-radius: 35% 35% 50% 50%;
 			overflow: hidden;
+			transition: background-color 1s ease;
 		}
 		
 		.patte .d {
@@ -303,7 +301,7 @@
 			position: absolute;
 			width: 330px;
 			height: 250px;
-			bottom: 22%;
+			bottom: 18%;
 			transition: bottom 0.5s ease-in-out 0.5s;
         }
 		
@@ -359,8 +357,8 @@
 			transform-origin: bottom;
 			animation: remuer 2s ease-in-out infinite;
 			transform-style: preserve-3d;
-			transition: bottom .2s ease-in-out,border-radius .2s ease-in-out;transform .3s ease-in-out;
 			transform: translate3d(0,0,0);
+			transition: bottom .2s ease-in-out,border-radius .2s ease-in-out,transform .3s ease-in-out,background-color 1s ease,border-color 1s ease;
 		}
 		
 		.is-hiding #cat-queut {
@@ -410,15 +408,20 @@
 			stroke-width: 2;
 			stroke-linecap="round";
 			stroke-linejoin="round";
+			transform: translate3d(0,0,0);
+			transition: fill 1s ease, stroke 1s ease;
+
         }
 		
 		.eye-white { 
 			fill: var(--color-secondary);
+			transition: fill 1s ease, stroke 1s ease;
 		}
 		
 		.pupil {
 			fill: var(--color-primary);
 			stroke: none;
+			transition: fill 1s ease, stroke 1s ease;
 		}
 		
 		#eyes-blink,#eyes-cross{
@@ -433,6 +436,7 @@
 			 stroke-width: 3;
 			 stroke-linecap: round;
 			 fill: var(--color-secondary);
+			 transition: fill 1s ease, stroke 1s ease;
 		}
 		
 		/* .night .eye-closed {
@@ -452,23 +456,20 @@
 			stroke-width: 1.5;
 			fill: none;
 			stroke-linecap: round;
+			transition: fill 1s ease, stroke 1s ease;
 		}
 		
 		.nose .nose-one {
 			fill: var(--color-secondary);
+			transition: fill 1s ease, stroke 1s ease;
 		}
+		
 		.nose .nose-two {
 			fill: none;
 			stroke: var(--color-secondary);
 			stroke-width: 1.5;
 			stroke-linecap: round;
-		}
-		
-		#monAudio{
-			position : absolute;
-			bottom : 0;
-			margin : auto;
-			z-index : 999;
+			transition: fill 1s ease, stroke 1s ease;
 		}
 		
 		.horizon-blocker {
@@ -480,6 +481,7 @@
 			background-color: var(--color-hz);
 			pointer-events: none;
 			z-index: 1;
+			transition: background-color 1s ease,border-color 1s ease;
         }
 		
 		.orbit-wrapper {
@@ -500,7 +502,7 @@
 			color:var(--color-secondary);
 			left: 50%;
 			opacity: 0.3;
-			transition: opacity 0.5s ease;
+			transition: opacity 0.5s ease, fill 1s ease, stroke 1s ease;;
 		}
 		
 		.sun {top: 0;}
@@ -531,7 +533,7 @@
 		#zzz-container span {
 		  position: absolute;
 		  opacity: 0;
-		  animation: sleep 3s linear 3s ;
+		  animation: sleep 3s linear infinite ;
 		}
 
 		#zzz-container span:nth-child(1) { animation-delay: 0s; font-size: 15px; }
