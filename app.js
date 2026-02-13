@@ -263,22 +263,26 @@ ready(function() {
 			cat.style.animationPlayState = 'running';
 		};
 
-		main.addEventListener('pointermove', (e) => {
-			const mouseX = e.clientX;
-			const mouseY = e.clientY;
+		const handleMove = (e) => {
+			const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+			const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
 			const sensitivity = 0.1;
 			const centerX = window.innerWidth / 2;
 			const centerY = window.innerHeight / 2;
 			const maxX = 100;
 			const maxY = 8;
-			let moveX = Math.max(maxX * -1, Math.min(maxX, (mouseX - centerX) * sensitivity));
-			let moveY = Math.max(maxY * -1, Math.min(maxY, (mouseY - centerY) * sensitivity));
+
+			let moveX = Math.max(maxX * -1, Math.min(maxX, (clientX - centerX) * sensitivity));
+			let moveY = Math.max(maxY * -1, Math.min(maxY, (clientY - centerY) * sensitivity));
+
 			container.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
 			hitbox.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
-			const elementAtPoint = document.elementFromPoint(mouseX, mouseY);
+
+			const elementAtPoint = document.elementFromPoint(clientX, clientY);
 			isOverHitbox = hitbox.contains(elementAtPoint);
 			isonscreen = true;
-			
+
 			if (isOverHitbox) {
 				if (!isHiding && !timeout) {
 					timeout = setTimeout(showCrossEyes, 100);
@@ -291,8 +295,8 @@ ready(function() {
 			}
 
 			if (!isHiding) {
-				updatePupil(pupilL, 80, 105, mouseX, mouseY);
-				updatePupil(pupilR, 140, 105, mouseX, mouseY);
+				updatePupil(pupilL, 80, 105, clientX, clientY);
+				updatePupil(pupilR, 140, 105, clientX, clientY);
 				eyeBlink.style.visibility = 'hidden';
 				eyesNormal.style.visibility = 'visible';
 				container.style.transitionDuration = "0.1s";
@@ -300,7 +304,10 @@ ready(function() {
 				zzz.style.transitionDelay = "0s";
 			}
 			cat.style.animationPlayState = 'paused';
-		}, false);
+			container.style.transitionDuration = "0.1s";
+
+			if (e.cancelable) e.preventDefault();
+		};
 
 		const resetState = () => {
 			if (timeout) { clearTimeout(timeout); timeout = null; };
@@ -312,13 +319,20 @@ ready(function() {
 			pupilR.setAttribute('cy', 105);
 			hitbox.style.transform = `translateX(0px) translateY(0px)`;
 			container.style.transitionDuration = "3s";
-			document.documentElement.classList.contains('night') ? styleNight() : styleDay();
+			if (typeof styleNight === 'function') {
+				document.documentElement.classList.contains('night') ? styleNight() : styleDay();
+			}
 		};
 
-		main.addEventListener('pointerup',() => {
+		main.addEventListener('pointermove', handleMove, { passive: false });
+		main.addEventListener('pointerleave', resetState);
+		main.addEventListener('pointerup', () => {
 			if(isOverHitbox) resetState();
 		});
-		main.addEventListener('pointerleave', resetState);
+
+		main.addEventListener('touchmove', handleMove, { passive: false });
+		main.addEventListener('touchend', resetState);
+		main.addEventListener('touchcancel', resetState);
 		
         function updatePupil(pupil, originX, originY, mouseX, mouseY) {
             const rect = container.getBoundingClientRect();

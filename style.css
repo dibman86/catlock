@@ -81,110 +81,134 @@
         #time-display {
 			position: relative;
 			transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s,background-color 1s ease,border-color 1s ease;
-        }
+		}
 		
-		 .clockHere{
-			  display: flex;
-			  gap: 8px;
-			}
-			.clockHere > div{
-			  min-width: 25px;
-			  display: grid;
-			  grid-template-rows: 50% 50%;
-			}
-			.clockHere > div > div, .clockHere > div{
-			  box-sizing: border-box;
-			}
-			.clockHere > div:nth-child(6), .clockHere > div:nth-child(3){
-			  display: flex !important;
-			  flex-direction: column !important;
-			  gap: 15px;
-			  min-height: 15px;
-			  min-width: 15px !important;
-			}
-			.clockHere > div:nth-child(6) > div, .clockHere > div:nth-child(3) > div{
-			  background: var(--color-secondary);
-			  min-height: 15px;
-			  min-width: 15px;
-			  border: 4px solid var(--color-primary);
-			}
-			.num0Here{
-			  border: 9px solid var(--color-secondary);
-			}
-			.num1Here{
-			  border-right: 9px solid var(--color-secondary);
-			}
-			.num2Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-bottom: 4px solid var(--color-secondary);
-			  border-left: none;
-			}
-			.num2Here > div:last-child{
-			  border: 9px solid var(--color-secondary);
-			  border-right: none;
-			  border-top: 5px solid var(--color-secondary);
-			}
-			.num3Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-left: none;
-			  border-bottom: 4px solid var(--color-secondary);
-			}
-			.num3Here > div:last-child{
-			  border: 9px solid var(--color-secondary);
-			  border-left: none;
-			  border-top: 5px solid var(--color-secondary);
-			}
-			.num4Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-top: none;
-			  border-bottom: 4px solid var(--color-secondary);
-			}
-			.num4Here > div:last-child{
-			  border-right: 9px solid var(--color-secondary);
-			  border-left: none;
-			  border-bottom: none;
-			  border-top: 5px solid var(--color-secondary);
-			}
-			.num5Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-right: none;
-			  border-bottom: 4px solid var(--color-secondary);
-			}
-			.num5Here > div:last-child{
-			  border: 9px solid var(--color-secondary);
-			  border-left: none;
-			  border-top: 5px solid var(--color-secondary);
-			}
-			.num6Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-right: none;
-			  border-bottom: 4px solid var(--color-secondary);
-			}
-			.num6Here > div:last-child{
-			  border: 9px solid var(--color-secondary);
-			  border-top: 5px solid var(--color-secondary);
-			}
-			.num7Here{
-			  border-right: 9px solid var(--color-secondary);
-			  border-top: 9px solid var(--color-secondary);
-			}
-			.num8Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-bottom: 4px solid var(--color-secondary);
-			}
-			.num8Here > div:last-child{
-			  border: 9px solid var(--color-secondary);
-			  border-top: 5px solid var(--color-secondary);
-			}
-			.num9Here > div:first-child{
-			  border: 9px solid var(--color-secondary);
-			  border-bottom: 4px solid var(--color-secondary);
-			}
-			.num9Here > div:last-child{
-			  border: 9px solid var(--color-secondary);
-			  border-top: 5px solid var(--color-secondary);
-			  border-left: none;
-			}
+		.clockHere{
+			display: flex;
+			gap: 8px;
+			--bw1 : 9px;
+			--bw2 : 5px;
+			--bw3 : 4px;
+		}
+		
+		.clockHere > div{
+			min-width: 25px;
+			display: grid;
+			grid-template-rows: 50% 50%;
+		}
+		
+		.clockHere > div > div, .clockHere > div{
+			box-sizing: border-box;
+		}
+		
+		.clockHere > div:nth-child(6), .clockHere > div:nth-child(3){
+			display: flex !important;
+			flex-direction: column !important;
+			gap: 15px;
+			min-height: 15px;
+			min-width: 15px !important;
+		}
+		
+		.clockHere > div:nth-child(6) > div, .clockHere > div:nth-child(3) > div{
+			background: var(--color-secondary);
+			min-height: 15px;
+			min-width: 15px;
+			border: 4px solid var(--color-primary);
+		}
+		
+		.num0Here{
+			border: var(--bw1) solid var(--color-secondary);
+		}
+		
+		.num1Here{
+			border-right: var(--bw1) solid var(--color-secondary);
+		}
+		
+		.num2Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-bottom: var(--bw3) solid var(--color-secondary);
+			border-left: none;
+		}
+		
+		.num2Here > div:last-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-right: none;
+			border-top: var(--bw2) solid var(--color-secondary);
+		}
+		
+		.num3Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-left: none;
+			border-bottom: var(--bw3) solid var(--color-secondary);
+		}
+		
+		.num3Here > div:last-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-left: none;
+			border-top: var(--bw2) solid var(--color-secondary);
+		}
+		
+		.num4Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-top: none;
+			border-bottom: var(--bw3) solid var(--color-secondary);
+		}
+		
+		.num4Here > div:last-child{
+			border-right: var(--bw1) solid var(--color-secondary);
+			border-left: none;
+			border-bottom: none;
+			border-top: var(--bw2) solid var(--color-secondary);
+		}
+		
+		.num5Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-right: none;
+			border-bottom: var(--bw3) solid var(--color-secondary);
+		}
+		
+		.num5Here > div:last-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-left: none;
+			border-top: var(--bw2) solid var(--color-secondary);
+		}
+		
+		.num6Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-right: none;
+			border-bottom: var(--bw3) solid var(--color-secondary);
+		}
+		
+		.num6Here > div:last-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-top: var(--bw2) solid var(--color-secondary);
+		}
+		
+		.num7Here{
+			border-right: var(--bw1) solid var(--color-secondary);
+			border-top: var(--bw1) solid var(--color-secondary);
+		}
+		
+		.num8Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-bottom: var(--bw3) solid var(--color-secondary);
+		}
+		
+		.num8Here > div:last-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-top: var(--bw2) solid var(--color-secondary);
+		}
+		
+		.num9Here > div:first-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-bottom: var(--bw3) solid var(--color-secondary);
+		}
+		
+		.num9Here > div:last-child{
+			border: var(--bw1) solid var(--color-secondary);
+			border-top: var(--bw2) solid var(--color-secondary);
+			border-left: none;
+		}
 
         #date-display {
 			padding: .4rem;
@@ -230,6 +254,7 @@
 			position: absolute;
 			bottom: 0;
 			width: 500px;
+			max-width: 90%;
 			height: 30%;
 			border-top: 1px solid var(--color-primary);
 			border-radius: 40px 40px 0 0;
@@ -347,7 +372,7 @@
 			background: var(--color-primary);
 			z-index: 10;
 			transform-origin: bottom;
-			transition: bottom .2s ease-in-out,border-radius .2s ease-in-out,transform .3s ease-in-out,background-color 1s ease,border-color 1s ease;
+			transition: bottom .2s ease-in-out,border-radius .2s ease-in-out,background-color 1s ease,border-color 1s ease;
 			animation: remuer 2s ease-in-out infinite;
 		}
 		
