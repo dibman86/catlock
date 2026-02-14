@@ -131,6 +131,10 @@ ready(function() {
 				}
 				const time = `${globalDataTime.hours}  ${globalDataTime.minutes}`;
 				let isDay;
+				
+				const sunriseStr = staticHoursSunrise.toString().padStart(2, '0') + " " + staticMinutesSunrise.toString().padStart(2, '0');
+				const sunsetStr = staticHoursSunset.toString().padStart(2, '0') + " " + staticMinutesSunset.toString().padStart(2, '0');
+				
 				verif = sunData.sunrise && sunData.sunset ? true : false;
 				if (verif) {
 					isDay = now >= sunData.sunrise && now <= sunData.sunset;
