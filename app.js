@@ -45,10 +45,10 @@ ready(function() {
 			let sunData = { sunrise: null, sunset: null };
 			let currentDay = new Date().toISOString().split('T')[0];
 			let verif = false;
-			const staticHoursSunrise = 8;
-			const staticMinutesSunrise = 30;
-			const staticHoursSunset = 19;
-			const staticMinutesSunset = 0;
+			const staticHoursSunrise = 7;
+			const staticMinutesSunrise = 20;
+			const staticHoursSunset = 18;
+			const staticMinutesSunset = 20;
 			
 			const safeGetItem = (key) => {return localStorage.getItem(key);};
 			const safeSetItem = (key, value) => {localStorage.setItem(key, value);};
