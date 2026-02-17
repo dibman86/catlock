@@ -63,8 +63,8 @@ ready(function() {
 					sunrise = sunData.sunrise.getTime();
 					sunset = sunData.sunset.getTime();
 				} else {
-					sunrise = new Date(d).setHours(staticHoursSunrise, 0, 0, 0);
-					sunset = new Date(d).setHours(staticHoursSunset, 0, 0, 0);
+					sunrise = new Date(d).setHours(staticHoursSunrise, staticMinutesSunrise, 0, 0);
+					sunset = new Date(d).setHours(staticHoursSunset, staticMinutesSunset, 0, 0);
 				}
 
 				let orbitAngle;
@@ -129,7 +129,7 @@ ready(function() {
 					'seconds' : String(now.getSeconds()).padStart(2, '0'),
 					'date' : now.toLocaleDateString('fr-FR', options)
 				}
-				const time = `${globalDataTime.hours}  ${globalDataTime.minutes}`;
+				const time = `${globalDataTime.hours} ${globalDataTime.minutes}`;
 				let isDay;
 				
 				const sunriseStr = staticHoursSunrise.toString().padStart(2, '0') + " " + staticMinutesSunrise.toString().padStart(2, '0');
