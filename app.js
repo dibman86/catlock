@@ -144,6 +144,21 @@ ready(function() {
 				
 				const currentClass = isDay ? "day" : "night";
 				const oldClass = isDay ? "night" : "day";
+				
+				const realday = String(staticHoursSunrise + 1).padStart(2, '0') + " " + staticMinutesSunrise.toString().padStart(2, '0');
+				const realnight = String(staticHoursSunset + 1).padStart(2, '0') + " " + staticMinutesSunset.toString().padStart(2, '0');
+				
+				if(time >= sunriseStr && time < realday){
+					htmlEl.classList.add("sunrise");
+				} else {
+					htmlEl.classList.remove("sunrise");
+				} 
+				
+				if(time >= sunsetStr && time < realnight){
+					htmlEl.classList.add("sunset");
+				} else {
+					htmlEl.classList.remove("sunset");
+				} 
 
 				if (!htmlEl.classList.contains(currentClass)) {
 					htmlEl.classList.replace(oldClass, currentClass) || htmlEl.classList.add(currentClass);

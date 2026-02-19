@@ -12,17 +12,26 @@
 		}
 		
 		.open-page.day {
-			--color-bg : #fff;
+			--color-bg : #ffffff;
 			--color-hz : #6a6a6a;
 			--color-primary : #d4d4d4;
 			--color-secondary : #101010;
 		}
 		
 		.open-page.night {
-			--color-bg : #000;
+			--color-bg : #000000;
 			--color-hz : #1a1a1a;
 			--color-primary : #101010;
 			--color-secondary : #d4d4d4;
+		}
+		
+		.day.sunrise,.night.sunset{
+			--color-bg : #000aaa;
+			--color-hz : #5a5a5a;
+		}
+		
+		.day.sunrise body,.night.sunset body{
+			background-image: linear-gradient(180deg,#000000 0%, #ffffff 100%);
 		}
 				
         body, html {
@@ -551,13 +560,17 @@
 			transform: translate(-50%, -50%);
 			color:var(--color-secondary);
 			left: 50%;
-			opacity: 0.3;
-			transition: opacity 0.5s ease, fill 1s ease, stroke 1s ease;
+			opacity: 0;
+			transition: opacity 1s ease, fill 1s ease, stroke 1s ease;
 		}
 		
 		.sun {top: 0;}
 
 		.moon {top: 100%;}
+		
+		.day.sunrise  .moon,.night.sunset .sun{
+			opacity: .3;
+		}
 		
 		.open-page .orbit-wrapper {opacity: 1;}
 		
