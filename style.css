@@ -91,6 +91,12 @@
 			opacity: 1;
 		}
 		
+		.night.sunrise .stars-group.view,.day.sunset .stars-group.view { 
+			display: block;
+			opacity: .2;
+			animation: none;
+		}
+		
 		.stars-group.blink {
 			animation: flash .5s ease-in-out 1;
 		}
@@ -670,9 +676,8 @@
             background: #000;
             border-radius: 50%;
         }
-		
-		
-		.day .moon, .night .sun{
+
+		.day .moon, .night .sun,.night.sunrise .moon{
 			opacity: 0;
 		}
 		
@@ -680,7 +685,7 @@
 			opacity: .1;
 		}
 		
-		.night.sunset .sun {
+		.night.sunrise .sun,.night.sunset .sun {
 			opacity: 1;
 		}
 		

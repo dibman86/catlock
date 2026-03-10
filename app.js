@@ -66,6 +66,9 @@ ready(function() {
 					sunrise = new Date(d).setHours(staticHoursSunrise, staticMinutesSunrise, 0, 0);
 					sunset = new Date(d).setHours(staticHoursSunset, staticMinutesSunset, 0, 0);
 				}
+				
+				const noon = new Date(d).setHours(12, 0, 0, 0);
+				const midnight = new Date(d).setHours(0, 0, 0, 0);
 
 				const lp = 2551442.8;
 				const newMoon = new Date(1970, 0, 7, 20, 35, 0);
@@ -76,28 +79,35 @@ ready(function() {
 					
 				if (phase < 0.5) {
 					shadow.style.left = (phase * 200) + "%";
-					shadow.style.background = "#000";
 				} else {
 					shadow.style.left = ((phase - 0.5) * 200 - 100) + "%";
-					shadow.style.background = "inherit";
 				}
 				
 				let orbitAngle;
 
 				if (now >= sunrise && now <= sunset) {
-					const dayProgress = (now - sunrise) / (sunset - sunrise);
-					orbitAngle = -90 + (dayProgress * 180);
+					if (now < noon) {
+						const progress = (now - sunrise) / (noon - sunrise);
+						orbitAngle = -90 + (progress * 90);
+					} else {
+						const progress = (now - noon) / (sunset - noon);
+						orbitAngle = progress * 90;
+					}
 				} else {
-					const nextSunrise = sunrise + 86400000;
-					const nightProgress = (now < sunrise) ? (now + 86400000 - sunset) / (nextSunrise - sunset) : (now - sunset) / (nextSunrise - sunset);
-					orbitAngle = 90 + (nightProgress * 180);
+					if (now > sunset) {
+						const progress = (now - sunset) / (new Date(d).setHours(24,0,0,0) - sunset);
+						orbitAngle = 90 + (progress * 90);
+					} else {
+						const progress = (now - midnight) / (sunrise - midnight);
+						orbitAngle = 180 + (progress * 90);
+					}
 				}
 
 				orbitEl.style.transform = `rotate(${orbitAngle}deg)`;
 				
 				const moonEl = orbitEl.querySelector('.moon');
 				if (moonEl) {
-					moonEl.style.transform = `translate(-50%, -50%) rotate(${-orbitAngle -30}deg)`;
+					moonEl.style.transform = `translate(-50%, -50%) scale(1.5) rotate(${-orbitAngle -30}deg)`;
 				}
 			};
 			
@@ -109,26 +119,37 @@ ready(function() {
 			  }
 			}
 			
+			/* function afficherHorizontalement(texte, conteneur) {
+				const htmlGenere = texte.split('').filter(char => char !== ' ').map(char => {
+				  const estUnChiffre = /[0-9]/.test(char);
+				  const classe = estUnChiffre ? 'class="chiffre"' : 'class="lettre"';
+				  return `<span ${classe}>${char}</span>`;
+				}).join('');
+				
+				conteneur.innerHTML = htmlGenere;
+			} */
+			
 			function updateClock(d) {
-
-				  clockNumHere("div:first-child", d.hours[0]);
-				  clockNumHere("div:nth-child(2)", d.hours[1]);
-				  
-				  clockNumHere("div:nth-child(4)", d.minutes[0]);
-				  clockNumHere("div:nth-child(5)", d.minutes[1]);
-				  
-				  clockNumHere("div:nth-child(7)", d.seconds[0]);
-				  clockNumHere("div:last-child", d.seconds[1]);
-				  
-				  document.getElementById('date-display').textContent = d.date;
-				  
-				  if (d.minutes === "00") {
-						catQueut.style.animation = 'none';
-						catQueut.style.borderRadius = '50% 50% 0 0'
-				  } else {
-						catQueut.style.animation = 'remuer 2s ease-in-out infinite';
-						catQueut.style.borderRadius = '20px 20px 0 0'
-				  }
+				
+				clockNumHere("div:first-child", d.hours[0]);
+				clockNumHere("div:nth-child(2)", d.hours[1]);
+				clockNumHere("div:nth-child(4)", d.minutes[0]);
+				clockNumHere("div:nth-child(5)", d.minutes[1]);
+				clockNumHere("div:nth-child(7)", d.seconds[0]);
+				clockNumHere("div:last-child", d.seconds[1]);
+				
+				const dateDisplay = document.getElementById('date-display');
+				if (dateDisplay.innerHTML !== d.date) dateDisplay.innerHTML = d.date;
+				
+				/*if (dateDisplay.innerHTML !== d.date) afficherHorizontalement(d.date, dateDisplay); */
+				
+				if (d.minutes === "00") {
+					catQueut.style.animation = 'none';
+					catQueut.style.borderRadius = '50% 50% 0 0'
+				} else {
+					catQueut.style.animation = 'remuer 2s ease-in-out infinite';
+					catQueut.style.borderRadius = '20px 20px 0 0'
+				}
 			}
 
 			const updateTheme = () => {
@@ -151,26 +172,23 @@ ready(function() {
 					'hours' : String(now.getHours()).padStart(2, '0'),
 					'minutes' : String(now.getMinutes()).padStart(2, '0'),
 					'seconds' : String(now.getSeconds()).padStart(2, '0'),
-					'date' : `${dateObj.weekday} ${dateObj.day} ${dateObj.month} ${dateObj.year}`
+					'date' : `${dateObj.weekday} ${dateObj.day.padStart(2, '0')} ${dateObj.month} ${dateObj.year}`
 				}
 				
 				const time = `${globalDataTime.hours} ${globalDataTime.minutes}`;
 				let isDay,inSunrise, inSunset, isNightTime;
 				
-				const sunriseStr = staticHoursSunrise.toString().padStart(2, '0') + " " + staticMinutesSunrise.toString().padStart(2, '0');
-				const sunsetStr = staticHoursSunset.toString().padStart(2, '0') + " " + staticMinutesSunset.toString().padStart(2, '0');
-				
 				hasApiData = sunData.sunrise && sunData.sunset ? true : false;
 				
 				if (hasApiData) {
 					const sunriseEnd = new Date(sunData.sunrise);
-					sunriseEnd.setMinutes(sunriseEnd.getMinutes() + 30);
+					sunriseEnd.setMinutes(sunriseEnd.getMinutes() - 30);
 					
 					const sunsetEnd = new Date(sunData.sunset);
 					sunsetEnd.setMinutes(sunsetEnd.getMinutes() + 30);
 					
 					isDay = now >= sunData.sunrise && now < sunData.sunset;
-					inSunrise = now >= sunData.sunrise && now < sunriseEnd;
+					inSunrise = now >= sunriseEnd && now < sunData.sunrise;
 					inSunset = now >= sunData.sunset && now < sunsetEnd;
 					isNightTime = now >= sunsetEnd || now < sunData.sunrise;
 
@@ -178,7 +196,7 @@ ready(function() {
 					const sunriseStr = staticHoursSunrise.toString().padStart(2, '0') + " " + staticMinutesSunrise.toString().padStart(2, '0');
 					const sunsetStr = staticHoursSunset.toString().padStart(2, '0') + " " + staticMinutesSunset.toString().padStart(2, '0');
 					
-					let endMinSunrise = staticMinutesSunrise + 30;
+					let endMinSunrise = staticMinutesSunrise - 30;
 					let endHourSunrise = staticHoursSunrise + Math.floor(endMinSunrise / 60);
 					endMinSunrise = endMinSunrise % 60;
 
@@ -190,9 +208,9 @@ ready(function() {
 					const sunsetEndStr = endHourSunset.toString().padStart(2, '0') + " " + endMinSunset.toString().padStart(2, '0');
 					
 					isDay = time >= sunriseStr && time < sunsetStr;
-					inSunrise = time >= sunriseStr && time < sunriseEndStr;
+					inSunrise = time >= sunriseEndStr && time < sunriseStr;
 					inSunset = time >= sunsetStr && time < sunsetEndStr;
-					isNightTime = time >= sunsetEndStr || time < sunriseStr;
+					isNightTime = time >= sunsetStr || time < sunriseStr;
 				}
 				
 				htmlEl.classList.toggle("sunrise", inSunrise);
@@ -228,53 +246,74 @@ ready(function() {
 				}, 1000);
 			};
 
-			const fetchSunData = (b) => {
+			const fetchSunData = (useCache) => {
 				const lastRefusal = safeGetItem(STORAGE_KEY);
 				const isRefusalValid = lastRefusal && (Date.now() - parseInt(lastRefusal) < FOUR_MONTHS_MS);
-				if(b){
+
+				if (useCache) {
 					const cached = safeGetItem(SUN_CACHE_KEY);
 					if (cached) {
 						try {
-							const parsed = JSON.parse(cached);	
+							const parsed = JSON.parse(cached);  
 							if (parsed.date === currentDay) {
 								sunData.sunrise = new Date(parsed.sunrise);
 								sunData.sunset = new Date(parsed.sunset);
 								updateTheme();
 								return;
 							}
-						} catch(e) { /* Erreur JSON parse, on continue */ }
+						} catch (e) {
+							// Erreur JSON parse, on continue
+						}
 					}
 				}
+
+				const fetchSunByCoords = (lat, lng) => {
+					return fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lng}&formatted=0`)
+						.then(res => res.json())
+						.then(json => {
+							sunData.sunrise = new Date(json.results.sunrise);
+							sunData.sunset = new Date(json.results.sunset);
+
+							safeSetItem(SUN_CACHE_KEY, JSON.stringify({
+								date: currentDay,
+								sunrise: sunData.sunrise,
+								sunset: sunData.sunset
+							}));
+
+							updateTheme();
+						})
+						.catch(() => updateTheme());
+				};
+
+				const fetchSunByIP = () => {
+					fetch("https://ipinfo.io/json")
+						.then(res => res.json())
+						.then(data => {
+							if (!data.loc) throw new Error("Coordonnées IP manquantes");
+							const [lat, lng] = data.loc.split(",");
+							return fetchSunByCoords(lat, lng);
+						})
+						.catch(() => updateTheme());
+				};
+
 				if (!navigator.geolocation || isRefusalValid) {
-					updateTheme();
+					fetchSunByIP();
 					return;
 				}
-				
-				navigator.geolocation.getCurrentPosition(async (pos) => {
-					try {
+
+				// Geolocation disponible
+				navigator.geolocation.getCurrentPosition(
+					(pos) => {
 						const { latitude, longitude } = pos.coords;
-						const resp = await fetch(`https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`);
-						const json = await resp.json();
-						
-						sunData.sunrise = new Date(json.results.sunrise);
-						sunData.sunset = new Date(json.results.sunset);
-						
-						safeSetItem(SUN_CACHE_KEY, JSON.stringify({
-							date: currentDay,
-							sunrise: sunData.sunrise,
-							sunset: sunData.sunset
-						}));
-						safeSetItem(STORAGE_KEY, null);
-						updateTheme();
-					} catch (e) {
-						updateTheme();
+						fetchSunByCoords(latitude, longitude);
+					},
+					(err) => {
+						if (err.code === err.PERMISSION_DENIED) {
+							safeSetItem(STORAGE_KEY, Date.now());
+						}
+						fetchSunByIP();
 					}
-				}, (err) => {
-					if (err.code === err.PERMISSION_DENIED) {
-						safeSetItem(STORAGE_KEY, Date.now());
-					}
-					updateTheme();
-				});
+				);
 			};
 
 			fetchSunData(true);
@@ -477,12 +516,12 @@ ready(function() {
 					createStars();
 				}, 250);
 			});
-});
+		});
 
-function ready(callback){
-	if (document.readyState!='loading') callback();
-	else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
-	else document.attachEvent('onreadystatechange', function(){
-		if (document.readyState=='complete') callback();
-	});
+		function ready(callback){
+			if (document.readyState!='loading') callback();
+			else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
+			else document.attachEvent('onreadystatechange', function(){
+				if (document.readyState=='complete') callback();
+		});
 }
