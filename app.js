@@ -238,6 +238,7 @@ ready(function() {
 				};
 				
 				const applyFallback = () => {
+					console.log("DEBUG: Utilisation des données de secours");
 					const cached = safeGetItem(SUN_CACHE_KEY);
 					let parsed = null;
 					try { parsed = JSON.parse(cached); } catch(e) {}
@@ -279,7 +280,11 @@ ready(function() {
 							if (json.status !== "OK") throw new Error("Erreur API");
 							processSunResults(lat, lng, json.results);
 						})
-						.catch(() => applyFallback());
+						.catch((err) => {
+							console.warn("Échec de la récupération des données solaires, application du fallback:", err);
+							applyFallback();
+							return Promise.resolve(); 
+						});
 				};
 
 				const fetchSunByIP = () => {
@@ -296,6 +301,7 @@ ready(function() {
 								const [lat, lng] = cached.location.split(",");
 								return fetchSunByCoords(lat, lng);
 							}
+							console.warn("Échec de la récupération des Coordonnées, application du fallback:", err);
 							applyFallback();
 						});
 				};

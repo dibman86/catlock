@@ -635,7 +635,7 @@
 			z-index: 1;
 			transition: background-color 1s ease,border-color 1s ease;
         }
-		
+
 		.curbure {
 			position: absolute;
 			width: 120%;
@@ -685,7 +685,7 @@
 			top: 100%;
 			background: #878787;
 			transform: translate(-50%, -50%);
-			filter: blur(1px) brightness(4) drop-shadow(0 0 20px #878787);
+			filter: blur(1px) brightness(4);
 			border-radius: 50%;
 			overflow: hidden;
         }
