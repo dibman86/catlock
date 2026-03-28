@@ -19,6 +19,7 @@ ready(function() {
 		let isOverHitbox = null;
 		let clockTimer = null;
 		let timeout= null;
+		let containerRect = container.getBoundingClientRect();
 		
 		document.body.classList.add("ready");
 		
@@ -447,9 +448,8 @@ ready(function() {
 		main.addEventListener('touchcancel', resetState);
 		
         function updatePupil(pupil, originX, originY, mouseX, mouseY) {
-            const rect = container.getBoundingClientRect();
-            const eyeX = rect.left + originX;
-            const eyeY = rect.top + originY;
+            const eyeX = containerRect.left + originX;
+            const eyeY = containerRect.top + originY;
             
             const angle = Math.atan2(mouseY - eyeY, mouseX - eyeX);
             const dist = Math.sqrt(Math.pow(mouseX-eyeX, 2) + Math.pow(mouseY-eyeY, 2));
@@ -524,12 +524,14 @@ ready(function() {
 					createStars();
 				}, 250);
 			});
-		});
+});
 
-		function ready(callback){
-			if (document.readyState!='loading') callback();
-			else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
-			else document.attachEvent('onreadystatechange', function(){
-				if (document.readyState=='complete') callback();
+function ready(callback) {
+	if (document.readyState != 'loading') {
+		requestAnimationFrame(() => {
+			callback();
 		});
+	} else {
+		document.addEventListener('DOMContentLoaded', callback);
+	}
 }

@@ -12,11 +12,11 @@
 		}
 		
 		svg{
-			display: none;
+			visibility: hidden;
 		}
 		
 		.ready svg {
-			display: block;
+			visibility: visible;
 		}
 		
 		.open-page.day {
@@ -91,6 +91,7 @@
 			background: transparent;
 			display: none;
 			opacity: 0;
+			will-change: transform, opacity;
 			transition: opacity 1s ease-in-out,display 1s allow-discrete;
 		}
 
@@ -469,6 +470,7 @@
 		.day #cat-queut {
 			border-top: 3rem solid #000;
 		}
+		
 		.is-hiding #cat-queut {
            animation-play-state: paused!important;
 			animation : none!important;
@@ -518,7 +520,6 @@
 			stroke-linejoin="round";
 			transform: translate3d(0,0,0);
 			transition: fill 1s ease, stroke 1s ease;
-
         }
 		
 		.day #cat-body {
@@ -673,6 +674,7 @@
 			transform: translate(-50%, -50%);
 			color:var(--color-secondary);
 			left: 50%;
+			will-change: transform, opacity;
 			transition: opacity 1s ease, fill 1s ease, stroke 1s ease;
 		}
 		
