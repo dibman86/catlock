@@ -1,6 +1,7 @@
 ready(function() {	
-		let htmlEl = document.documentElement;
+		const htmlEl = document.documentElement;
 		const main = document.getElementById("main-container");
+		const starContainer = document.getElementById('stars-container');
 		const hitbox = document.getElementById('cat-hitbox');
 		const container = document.getElementById('cat-container');
 		const cat = document.getElementById('cat');
@@ -21,6 +22,49 @@ ready(function() {
 		let clockTimer = null;
 		let timeout= null;
 		let containerRect = container.getBoundingClientRect();
+		
+		const cloudLayer = document.getElementById('clouds');
+
+		function updateClouds() {
+			const clouds = document.querySelectorAll('.cloud');
+				
+			if (clouds.length > 0) {
+				clouds.forEach(c => c.style.opacity = 0);
+					
+				setTimeout(() => {
+					cloudLayer.innerHTML = '';
+					generateNewClouds();
+				}, 2000);
+			} else {
+				generateNewClouds();
+			}
+		}
+
+		function generateNewClouds() {
+			const cloudCount = Math.floor(Math.random() * (8 - 5) + 5); 
+			for (let i = 0; i < cloudCount; i++) {
+				const cloud = document.createElement('div');
+				const body = document.createElement('div');
+					
+				const scale = (Math.random() * (1.2 - 0.6) + 0.6).toFixed(2); 
+				const topPos = Math.floor(Math.random() * (55 - 15) + 15);
+				const duration = Math.floor(Math.random() * (200 - 80) + 80);
+				const delay = Math.floor(Math.random() * 100);
+				const opacity = (Math.random() * (0.8 - 0.5) + 0.5).toFixed(2);
+
+				cloud.className = 'cloud';
+				cloud.style.top = `${topPos}%`;
+				cloud.style.animation = `drift ${duration}s linear infinite`;
+				cloud.style.animationDelay = `${delay}s`;
+				cloud.style.transform = `scale(${scale})`;
+
+				cloudLayer.appendChild(cloud);
+
+				setTimeout(() => { cloud.style.opacity = opacity; }, 100);
+			}
+		}
+
+		updateClouds();
 		
 		document.body.classList.add("ready");
 		
@@ -59,18 +103,20 @@ ready(function() {
 				const orbitEl = document.getElementById("celestial-orbit");
 
 				let sunrise, sunset;
-				const now = d.getTime();
+				const nowTime = d.getTime();
+					
+				sunrise = new Date(sunData.sunrise);
+				sunrise.setFullYear(d.getFullYear(), d.getMonth(), d.getDate());
 
-				sunrise = sunData.sunrise.getTime();
-				sunset = sunData.sunset.getTime();
-				
-				
+				sunset = new Date(sunData.sunset);
+				sunset.setFullYear(d.getFullYear(), d.getMonth(), d.getDate());
+
 				const noon = new Date(d).setHours(12, 0, 0, 0);
 				const midnight = new Date(d).setHours(0, 0, 0, 0);
 
 				const synodicMonth = 29.530588853;
 				const knownNewMoon = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
-				const daysSinceNewMoon = (now - knownNewMoon.getTime()) / 86400000;
+				const daysSinceNewMoon = (d - knownNewMoon.getTime()) / 86400000;
 				let phase = (daysSinceNewMoon % synodicMonth) / synodicMonth;
 				
 				const shadow = document.getElementById('moon-phase-shadow');
@@ -85,20 +131,20 @@ ready(function() {
 				
 				let orbitAngle;
 
-				if (now >= sunrise && now <= sunset) {
-					if (now < noon) {
-						const progress = (now - sunrise) / (noon - sunrise);
+				if (nowTime >= sunrise && nowTime <= sunset) {
+					if (nowTime < noon) {
+						const progress = (nowTime - sunrise) / (noon - sunrise);
 						orbitAngle = -90 + (progress * 90);
 					} else {
-						const progress = (now - noon) / (sunset - noon);
+						const progress = (nowTime - noon) / (sunset - noon);
 						orbitAngle = progress * 90;
 					}
 				} else {
-					if (now > sunset) {
-						const progress = (now - sunset) / (new Date(d).setHours(24,0,0,0) - sunset);
+					if (nowTime > sunset) {
+						const progress = (nowTime - sunset) / (new Date(d).setHours(24,0,0,0) - sunset);
 						orbitAngle = 90 + (progress * 90);
 					} else {
-						const progress = (now - midnight) / (sunrise - midnight);
+						const progress = (nowTime - midnight) / (sunrise - midnight);
 						orbitAngle = 180 + (progress * 90);
 					}
 				}
@@ -155,8 +201,10 @@ ready(function() {
 			const updateTheme = () => {
 				if(clockTimer) clearTimeout(clockTimer)
 
-				htmlEl = document.documentElement;
 				const now = new Date();
+				const heure =  now.getHours();
+				const minutes =  now.getMinutes();
+				const seconds =  now.getSeconds();
 				const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
 				const formatter = new Intl.DateTimeFormat('fr-FR', options);
 				const parts = formatter.formatToParts(now);
@@ -169,13 +217,16 @@ ready(function() {
 				};
 				
 				const globalDataTime = {
-					'hours' : String(now.getHours()).padStart(2, '0'),
-					'minutes' : String(now.getMinutes()).padStart(2, '0'),
-					'seconds' : String(now.getSeconds()).padStart(2, '0'),
+					'hours' : String(heure).padStart(2, '0'),
+					'minutes' : String(minutes).padStart(2, '0'),
+					'seconds' : String(seconds).padStart(2, '0'),
 					'date' : `<span id="weekday">${dateObj.weekday}</span> <span id="day">${dateObj.day.padStart(2, '0')}</span> <span id="month">${dateObj.month}</span> <span id="year">${dateObj.year}</span>`
 				}
 				
-				const time = `${globalDataTime.hours} ${globalDataTime.minutes}`;
+				if (seconds === 0 && minutes === 0 && heure % 4 === 0) {
+					updateClouds();
+				}
+				
 				let isDay,inSunrise, inSunset, isNightTime;
 				
 				const sunriseEnd = new Date(sunData.sunrise);
@@ -200,10 +251,7 @@ ready(function() {
 					htmlEl.classList.contains('night') && !htmlEl.classList.contains('sunrise') && !htmlEl.classList.contains('sunset') ? styleNight() : styleDay();
 				}
 				
-				const starGroups = document.querySelectorAll('.stars-group');
-				starGroups.forEach(group => {
-					isNightTime ? group.classList.add("view") : group.classList.remove("view");
-				});
+				starContainer.classList.toggle("view", isNightTime);
 				
 				updateClock(globalDataTime);
 				updateCelestialPosition(now);
@@ -225,13 +273,14 @@ ready(function() {
 				const isRefusalValid = lastRefusal && (Date.now() - parseInt(lastRefusal) < FOUR_MONTHS_MS);
 
 				const processSunResults = (lat, lng, results) => {
+					
 					sunData.sunrise = new Date(results.sunrise);
 					sunData.sunset = new Date(results.sunset);
 
 					const locationTag = `${Math.round(lat)},${Math.round(lng)}`;
 					safeSetItem(SUN_CACHE_KEY, JSON.stringify({
 						date: currentDay,
-						location: locationTag,
+						loc: locationTag,
 						sunrise: results.sunrise,
 						sunset: results.sunset
 					}));
@@ -266,14 +315,14 @@ ready(function() {
 						try { parsedCache = JSON.parse(cached); } catch (e) {}
 					}
 
-					if (useCache && parsedCache && parsedCache.date === currentDay && parsedCache.location === locationTag) {
+					if (useCache && parsedCache && parsedCache.date === currentDay && parsedCache.loc === locationTag) {
 						sunData.sunrise = new Date(parsedCache.sunrise);
 						sunData.sunset = new Date(parsedCache.sunset);
 						updateTheme();
 						return Promise.resolve();
 					}
 
-					return fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lng}&formatted=0`)
+					return fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lng}&date=${currentDay}&formatted=0`)
 						.then(res => {
 							if (!res.ok) throw new Error("Erreur Réseau"); 
 							return res.json();
@@ -299,8 +348,8 @@ ready(function() {
 						})
 						.catch(() => {
 							const cached = JSON.parse(safeGetItem(SUN_CACHE_KEY) || "{}");
-							if (cached.location) {
-								const [lat, lng] = cached.location.split(",");
+							if (cached.loc) {
+								const [lat, lng] = cached.loc.split(",");
 								return fetchSunByCoords(lat, lng);
 							}
 							console.warn("Échec de la récupération des Coordonnées, application du fallback:", err);
@@ -400,8 +449,8 @@ ready(function() {
 					timeout = setTimeout(showCrossEyes, 100);
 				}
 			} else {
+				if (timeout) { clearTimeout(timeout); timeout = null; }
 				if (isHiding) {
-					if (timeout) { clearTimeout(timeout); timeout = null; }
 					showNormalEyes();
 				}
 			}
@@ -431,10 +480,7 @@ ready(function() {
 			pupilR.setAttribute('cy', 105);
 			hitbox.style.transform = `translateX(0px) translateY(0px)`;
 			container.style.transitionDuration = "3s";
-			if (typeof styleNight === 'function') {
-				htmlEl = document.documentElement;
-				htmlEl.classList.contains('night') && !htmlEl.classList.contains('sunrise') && !htmlEl.classList.contains('sunset') ? styleNight() : styleDay();
-			}
+			htmlEl.classList.contains('night') && !htmlEl.classList.contains('sunrise') && !htmlEl.classList.contains('sunset') ? styleNight() : styleDay();
 		};
 
 		main.addEventListener('pointermove', handleMove, { passive: false });

@@ -78,31 +78,51 @@
 			pointer-events: auto;
 		}
 		
+		#stars-container{
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			display: none;
+			opacity: 0;
+			overflow: hidden;
+			will-change: transform, opacity;
+			transition: opacity 1s ease-in-out,display 1s allow-discrete;
+		}
+		
 		.stars-group {
 			position: absolute;
 			top: 0;
 			left: 0;
+			border-radius: 50%;
+		}
+		
+		#stars1{
+			width: 1px;
+			height: 1px;
+		}
+		
+		#stars2{
 			width: 2px;
 			height: 2px;
-			background: transparent;
-			display: none;
-			opacity: 0;
-			will-change: transform, opacity;
-			transition: opacity 1s ease-in-out,display 1s allow-discrete;
+		}
+		
+		#stars3{
+			width: 4px;
+			height: 4px;
 		}
 
-		.night .stars-group.view { 
+		.night #stars-container.view { 
 			display: block;
 			opacity: 1;
 		}
 		
-		.night.sunrise .stars-group.view,.day.sunset .stars-group.view { 
+		.night.sunrise #stars-container.view,.day.sunset #stars-container.view { 
 			display: block;
 			opacity: .2;
 			animation: none;
 		}
 		
-		.stars-group.blink {
+		#stars-container.view .stars-group.blink {
 			animation: flash .5s ease-in-out 1;
 		}
 		
@@ -421,7 +441,7 @@
 			bottom: 55%;
 		}
 		
-		.night #cat-global-container{
+		.night:not(.sunrise):not(.sunset) #cat-global-container{
 			bottom: 55%!important;
 			transition:none;
 		}
@@ -594,7 +614,7 @@
 		  transition: opacity .5s ease;
 		}
 		
-		.night #zzz-container {
+		.night:not(.sunrise):not(.sunset) #zzz-container {
 		  display: block;
 		}
 		
@@ -669,6 +689,7 @@
 			aspect-ratio : 1/1;
 			border-radius: 50%;
 			transform-origin: center center;
+			transition: transform .5s ease;
 		}
 
 		.celestial-body {
@@ -715,7 +736,7 @@
 			opacity: 1;
 		}
 		
-		.sky {
+		#clouds {
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -727,23 +748,23 @@
 
 		.open-page .cloud {
 			position: absolute;
-			left: 150%;
+			left: 102%;
 			width: 200px;
 			height: 67px;
 			background-color: var(--color-secondary);
 			//border: 2px solid var(--color-primary);
 			border-radius: 100px;
-			animation-name: moveclouds;
-			animation-timing-function: linear;
-			animation-iteration-count: infinite;
+			filter: blur(5px);
+			will-change: left, opacity;
+			transition: opacity 2s ease-in-out;
 		}
 
-		@keyframes moveclouds {
+		@keyframes drift {
 			0% {
-				left: 150%;
+				left: 102%;
 			}
 			100% {
-				left: -150%;
+				left: -200px;
 			}
 		}
 
@@ -774,44 +795,6 @@
 			left: 90px;
 		}
 
-		.x1 {
-			top: 5%;
-			animation-duration: 35s;
-			transform: scale(0.6);
-			opacity: 0.8;
-		}
-
-		.x2 {
-			top: 10%;
-			animation-duration: 50s;
-			animation-delay: 5s;
-			transform: scale(0.8);
-			opacity: 0.6;
-		}
-
-		.x3 {
-			top: 40%;
-			animation-duration: 40s;
-			transform: scale(0.9);
-			opacity: 0.9;
-		}
-
-		.x4 {
-			top: 25%;
-			animation-duration: 60s;
-			animation-delay: 10s;
-			transform: scale(0.6);
-			opacity: 0.7;
-		}
-
-		.x5 {
-			top: 15%;
-			animation-duration: 30s;
-			animation-delay: 8s;
-			transform: scale(1);
-			opacity: 0.7;
-		}
-		
 		.loader{
 			position: absolute;
 			background: #000;

@@ -15,9 +15,11 @@
 <body>
 	<div id="main-container">
 		<div class="sky-overlay"></div>
-		<div id="stars1" class="stars-group"></div>
-		<div id="stars2" class="stars-group"></div>
-		<div id="stars3" class="stars-group"></div>
+		<div id="stars-container">
+			<div id="stars1" class="stars-group"></div>
+			<div id="stars2" class="stars-group"></div>
+			<div id="stars3" class="stars-group"></div>
+		</div>
 		<div class="orbit-wrapper" id="celestial-orbit">
 			<!-- <svg class="celestial-body sun" viewBox="0 0 24 24" width="110" height="110">
 				<circle cx="12" cy="12" r="6" fill="currentColor"/>
@@ -42,13 +44,7 @@
 				<div class="moon-shadow" id="moon-phase-shadow"></div>
 			</div>
 		</div>
-		<div class="sky">
-			<div class="cloud x1"></div>
-			<div class="cloud x2"></div>
-			<div class="cloud x3"></div>
-			<div class="cloud x4"></div>
-			<div class="cloud x5"></div>
-		</div>
+		<div id="clouds"></div>
 		<div class="horizon-blocker">
 			<svg class="montagne" width="400" height="250" viewBox="0 0 400 250">
 				<path d="M30 250 L100 140 L140 190 L200 60 L260 170 L320 120 L380 250 Z"></path>
