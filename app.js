@@ -72,16 +72,16 @@ ready(function() {
 			eyesNormal.style.visibility = 'visible';
 			eyeBlink.style.visibility = 'hidden';
 			cat.style.animationPlayState = 'running';
-			container.style.transform = `translateX(0px) translateY(0px) rotate(0deg)`;
+			container.style.transform = 'translateX(0px) translateY(0px) rotate(0deg)';
 		}
 		
 		const styleNight = () => {
 			eyesNormal.style.visibility = 'hidden';
 			eyeBlink.style.visibility = 'visible';
 			cat.style.animationPlayState = 'paused';
-			container.style.transform = `translateX(0px) translateY(12px) rotate(-10deg)`;
+			container.style.transform = 'translateX(0px) translateY(12px) rotate(-10deg)';
 			zzz.style.opacity = '1';
-			zzz.style.transitionDelay = "3s";
+			zzz.style.transitionDelay = '3s';
 		}
 		
 		async function startThemeEngine() {
@@ -190,11 +190,9 @@ ready(function() {
 				/*if (dateDisplay.innerHTML !== d.date) afficherHorizontalement(d.date, dateDisplay); */
 				
 				if (d.minutes === "00") {
-					catQueut.style.animation = 'none';
-					catQueut.style.borderRadius = '50% 50% 0 0'
+					catQueut.classList.add('stop');
 				} else {
-					catQueut.style.animation = 'remuer 2s ease-in-out infinite';
-					catQueut.style.borderRadius = '20px 20px 0 0'
+					catQueut.classList.remove('stop');
 				}
 			}
 

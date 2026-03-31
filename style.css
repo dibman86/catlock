@@ -483,13 +483,17 @@
 			width: 25px;
 			height: 250px;
 			border: 2px solid var(--color-secondary);
-			
 			border-radius: 20px 20px 0 0;
 			background: var(--color-primary);
 			z-index: 10;
 			transform-origin: bottom;
 			transition: bottom .2s ease-in-out,border-radius .2s ease-in-out,background-color 1s ease,border-color 1s ease;
 			animation: remuer 2s ease-in-out infinite;
+		}
+		
+		#cat-queut.stop {
+			animation: none;
+			border-radius: 50% 50% 0 0;
 		}
 		
 		.day #cat-queut {
