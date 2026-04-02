@@ -328,7 +328,6 @@ ready(function() {
 					const locationTag = `${Math.round(lat)},${Math.round(lng)}`;
 					const cached = safeGetItem(SUN_CACHE_KEY);
 					let parsedCache = null;
-					const cityName = await getCityName(lat, lng);
 					
 					if (cached) {
 						try { parsedCache = JSON.parse(cached); } catch (e) {}
@@ -337,7 +336,7 @@ ready(function() {
 					if (useCache && parsedCache && parsedCache.version === CACHE_VERSION  && parsedCache.date === currentDay && parsedCache.loc === locationTag) {
 						sunData.sunrise = new Date(parsedCache.sunrise);
 						sunData.sunset = new Date(parsedCache.sunset);
-						locationName.textContent = cityName;
+						locationName.textContent = parsedCache.city;
 						updateTheme();
 						return Promise.resolve();
 					}
@@ -347,14 +346,15 @@ ready(function() {
 							if (!res.ok) throw new Error("Erreur Réseau"); 
 							return res.json();
 						})
-						.then(json => {
+						.then(async (json) => {
 							if (json.status !== "OK") throw new Error("Erreur API");
+							const cityName = await getCityName(lat, lng);
 							processSunResults(lat, lng, locationTag, cityName, json.results);
 						})
 						.catch((err) => {
 							console.warn("Échec de la récupération des données solaires, application du fallback:", err);
 							applyFallback();
-							return Promise.resolve(); 
+							return Promise.resolve();
 						});
 				};
 
@@ -374,6 +374,7 @@ ready(function() {
 							}
 							console.warn("Échec de la récupération des Coordonnées, application du fallback:", err);
 							applyFallback();
+							return Promise.resolve();
 						});
 				};
 

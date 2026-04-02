@@ -723,12 +723,33 @@
 			height: 80px;
 			position: relative;
 			top: 100%;
-			background: #878787;
+			background: #e0e0e0;
 			transform: translate(-50%, -50%);
-			filter: blur(1px) brightness(4);
+			filter: blur(0.5px) brightness(1.4);
 			border-radius: 50%;
 			overflow: hidden;
+			box-shadow: inset -10px -5px 15px rgba(0, 0, 0, 0.2);
         }
+		
+		.moon::before ,.moon::after{
+			content: '';
+			position: absolute;
+			display: block;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+		
+		.moon::before {
+			opacity: 0.6;
+			background: radial-gradient(circle at 30% 30%, #a0a0a0 8%, transparent 12%),radial-gradient(circle at 60% 70%, #909090 12%, transparent 18%),radial-gradient(circle at 75% 25%, #b0b0b0 5%, transparent 10%);
+		}
+
+		.moon::after {
+			background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.8) 2%, transparent 8%),radial-gradient(circle at 62% 68%, rgba(255,255,255,0.8) 3%, transparent 10%);
+			mix-blend-mode: overlay;
+		}
 		
         .moon-shadow {
             position: absolute;
