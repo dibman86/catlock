@@ -814,7 +814,7 @@
 		}
 		
 		.night.sunset .moon {
-			opacity: .1;
+			opacity: 0.02;
 		}
 		
 		.night.sunrise .sun,.night.sunset .sun {
