@@ -204,7 +204,7 @@ ready(function() {
 				const heure =  now.getHours();
 				const minutes =  now.getMinutes();
 				const seconds =  now.getSeconds();
-				const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+				const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
 				const formatter = new Intl.DateTimeFormat('fr-FR', options);
 				const parts = formatter.formatToParts(now);
 
@@ -219,7 +219,7 @@ ready(function() {
 					'hours' : String(heure).padStart(2, '0'),
 					'minutes' : String(minutes).padStart(2, '0'),
 					'seconds' : String(seconds).padStart(2, '0'),
-					'date' : `<span id="weekday">${dateObj.weekday}</span> <span id="day">${dateObj.day.padStart(2, '0')}</span> <span id="month">${dateObj.month}</span> <span id="year">${dateObj.year}</span>`
+					'date' : `<span id="weekday">${dateObj.weekday}</span> <span id="day">${dateObj.day}</span> <span id="month">${dateObj.month}</span> <span id="year">${dateObj.year}</span>`
 				}
 				
 				if (seconds === 0 && minutes === 0 && heure % 4 === 0) {
