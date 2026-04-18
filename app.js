@@ -237,7 +237,7 @@ ready(function() {
 				isDay = now >= sunData.sunrise && now < sunData.sunset;
 				inSunrise = now >= sunriseEnd && now < sunData.sunrise;
 				inSunset = now >= sunData.sunset && now < sunsetEnd;
-				isNightTime = now >= sunsetEnd || now < sunData.sunrise;
+				isNightTime = now >= sunData.sunset || now < sunriseEnd;
 
 				htmlEl.classList.toggle("sunrise", inSunrise);
 				htmlEl.classList.toggle("sunset", inSunset);

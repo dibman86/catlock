@@ -87,11 +87,11 @@
 			position: absolute;
 			width: 100%;
 			height: 100%;
-			display: none;
+			visibility: hidden;
 			opacity: 0;
 			overflow: hidden;
 			will-change: transform, opacity;
-			transition: opacity 1s ease-in-out,display 1s allow-discrete;
+			transition: opacity 1s ease-in-out;
 		}
 		
 		.stars-group {
@@ -115,16 +115,17 @@
 			width: 4px;
 			height: 4px;
 		}
+		
+		.night:not(.sunrise) #stars-container.view ,.day.sunset #stars-container.view { 
+			visibility: visible;
+		}
 
-		.night #stars-container.view { 
-			display: block;
+		.night:not(.sunrise) #stars-container.view { 
 			opacity: 1;
 		}
 		
-		.night.sunrise #stars-container.view,.day.sunset #stars-container.view { 
-			display: block;
+		.night.sunset #stars-container.view { 
 			opacity: .2;
-			animation: none;
 		}
 		
 		#stars-container.view .stars-group.blink {
@@ -454,7 +455,7 @@
 			bottom: 55%;
 		}
 		
-		.night:not(.sunrise):not(.sunset) #cat-global-container{
+		.night:not(.sunrise) #cat-global-container,.night:not(.sunset) #cat-global-container{
 			bottom: 55%!important;
 			transition:none;
 		}
@@ -631,7 +632,7 @@
 		  transition: opacity .5s ease;
 		}
 		
-		.night:not(.sunrise):not(.sunset) #zzz-container {
+		.night:not(.sunrise) #zzz-container,.night:not(.sunset) #zzz-container {
 		  display: block;
 		}
 		
