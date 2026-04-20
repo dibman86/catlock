@@ -178,12 +178,16 @@ ready(function() {
 			
 			function updateClock(d) {
 				
-				clockNumHere("div:first-child", d.hours[0]);
-				clockNumHere("div:nth-child(2)", d.hours[1]);
-				clockNumHere("div:nth-child(4)", d.minutes[0]);
-				clockNumHere("div:nth-child(5)", d.minutes[1]);
-				clockNumHere("div:nth-child(7)", d.seconds[0]);
-				clockNumHere("div:last-child", d.seconds[1]);
+				const timeMappings = [
+					{ sel: "div:first-child", val: d.hours[0] },
+					{ sel: "div:nth-child(2)", val: d.hours[1] },
+					{ sel: "div:nth-child(4)", val: d.minutes[0] },
+					{ sel: "div:nth-child(5)", val: d.minutes[1] },
+					{ sel: "div:nth-child(7)", val: d.seconds[0] },
+					{ sel: "div:last-child", val: d.seconds[1] }
+				];
+
+				timeMappings.forEach(item => clockNumHere(item.sel, item.val));
 				
 				const dateDisplay = document.getElementById('date-display');
 				if (dateDisplay.innerHTML !== d.date) dateDisplay.innerHTML = d.date;
