@@ -671,7 +671,7 @@
 		.horizon-blocker,.curbure , .cat-blocker::before{
 			position: absolute;
 			background-color: var(--color-hz);
-			background-image: repeating-radial-gradient(circle at 0 0, transparent 0, var(--color-hz) 15px), repeating-linear-gradient(#141414, #141414);
+			background-image: repeating-radial-gradient(circle at -50% 0%, transparent 0, var(--color-hz) 15px), repeating-linear-gradient(#141414, #141414);
 			transition: --color-hz 1s ease,border-color 1s ease;
 		}
 		
