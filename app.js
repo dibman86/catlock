@@ -370,7 +370,7 @@ ready(function() {
 							const [lat, lng] = data.loc.split(",");
 							return fetchSunByCoords(parseFloat(lat), parseFloat(lng));
 						})
-						.catch(() => {
+						.catch((err) => {
 							const cached = JSON.parse(safeGetItem(SUN_CACHE_KEY) || "{}");
 							if (cached.loc) {
 								const [lat, lng] = cached.loc.split(",");
@@ -386,8 +386,10 @@ ready(function() {
 					fetchSunByIP();
 					return;
 				}
+				
+				fetchSunByIP();
 
-				navigator.geolocation.getCurrentPosition(
+				/*navigator.geolocation.getCurrentPosition(
 					(pos) => fetchSunByCoords(pos.coords.latitude, pos.coords.longitude),
 					(err) => {
 						if (err.code === err.PERMISSION_DENIED) {
@@ -395,7 +397,7 @@ ready(function() {
 						}
 						fetchSunByIP();
 					}
-				);
+				);*/
 			};
 
 			fetchSunData(true);
