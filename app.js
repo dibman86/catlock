@@ -331,16 +331,16 @@ ready(function() {
 				const fetchSunByCoords = async (lat, lng) => {
 					const locationTag = `${Math.round(lat)},${Math.round(lng)}`;
 					const cached = safeGetItem(SUN_CACHE_KEY);
-					let parsedCache = null;
+					let parsed = null;
 					
 					if (cached) {
-						try { parsedCache = JSON.parse(cached); } catch (e) {}
+						try { parsed = JSON.parse(cached); } catch (e) {}
 					}
 					
-					if (useCache && parsedCache && parsedCache.version === CACHE_VERSION  && parsedCache.date === currentDay && parsedCache.loc === locationTag) {
-						sunData.sunrise = new Date(parsedCache.sunrise);
-						sunData.sunset = new Date(parsedCache.sunset);
-						locationName.textContent = parsedCache.city;
+					if (useCache && parsed && parsed.version === CACHE_VERSION  && parsed.date === currentDay && parsed.loc === locationTag) {
+						sunData.sunrise = new Date(parsed.sunrise);
+						sunData.sunset = new Date(parsed.sunset);
+						locationName.textContent = parsed.city;
 						updateTheme();
 						return Promise.resolve();
 					}
@@ -372,9 +372,14 @@ ready(function() {
 							return fetchSunByCoords(parseFloat(lat), parseFloat(lng));
 						})
 						.catch((err) => {
-							const cached = JSON.parse(safeGetItem(SUN_CACHE_KEY) || "{}");
-							if (cached.loc) {
-								const [lat, lng] = cached.loc.split(",");
+							const cached = safeGetItem(SUN_CACHE_KEY);
+							let parsed = null;
+							if (cached) {
+								try { parsed = JSON.parse(cached); } catch (e) {}
+							}
+							
+							if (parsed.loc) {
+								const [lat, lng] = parsed.loc.split(",");
 								return fetchSunByCoords(lat, lng);
 							}
 							console.warn("Échec de la récupération des Coordonnées, application du fallback:", err);
