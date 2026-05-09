@@ -276,6 +276,12 @@ ready(function() {
 				const isRefusalValid = lastRefusal && (Date.now() - parseInt(lastRefusal) < FOUR_MONTHS_MS);
 				const CACHE_VERSION = "1.4";
 				
+				const cached = safeGetItem(SUN_CACHE_KEY);
+				let parsed = null;
+				if (cached) {
+					try { parsed = JSON.parse(cached); } catch (e) {}
+				}
+				
 				const getCityName = async (lat, lng) => {
 					try {
 						const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=fr`);
@@ -283,7 +289,6 @@ ready(function() {
 						let city = data.city || data.locality || "Ville inconnue";
 						let country = data.countryName || "Pays inconnu";
 						country = country.split('(')[0].trim();
-						
 						return `${city} | ${country}`;
 					} catch (error) {
 						console.error("Erreur de récupération :", error);
@@ -310,9 +315,6 @@ ready(function() {
 				
 				const applyFallback = () => {
 					console.log("DEBUG: Utilisation des données de secours");
-					const cached = safeGetItem(SUN_CACHE_KEY);
-					let parsed = null;
-					try { parsed = JSON.parse(cached); } catch(e) {}
 
 					if (parsed) {
 						sunData.sunrise = new Date(parsed.sunrise);
@@ -330,12 +332,6 @@ ready(function() {
 
 				const fetchSunByCoords = async (lat, lng) => {
 					const locationTag = `${Math.round(lat)},${Math.round(lng)}`;
-					const cached = safeGetItem(SUN_CACHE_KEY);
-					let parsed = null;
-					
-					if (cached) {
-						try { parsed = JSON.parse(cached); } catch (e) {}
-					}
 					
 					if (useCache && parsed && parsed.version === CACHE_VERSION  && parsed.date === currentDay && parsed.loc === locationTag) {
 						sunData.sunrise = new Date(parsed.sunrise);
@@ -372,12 +368,6 @@ ready(function() {
 							return fetchSunByCoords(parseFloat(lat), parseFloat(lng));
 						})
 						.catch((err) => {
-							const cached = safeGetItem(SUN_CACHE_KEY);
-							let parsed = null;
-							if (cached) {
-								try { parsed = JSON.parse(cached); } catch (e) {}
-							}
-							
 							if (parsed.loc) {
 								const [lat, lng] = parsed.loc.split(",");
 								return fetchSunByCoords(lat, lng);
