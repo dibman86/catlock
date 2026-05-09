@@ -361,7 +361,8 @@ ready(function() {
 							return Promise.resolve();
 						});
 				};
-
+				
+				//Les Bloqueur de PUB comme Ublock bloque le requete de gerlogalisation par ip.
 				const fetchSunByIP = () => {
 					fetch("https://ipinfo.io/json")
 						.then(res => res.json())
@@ -386,10 +387,8 @@ ready(function() {
 					fetchSunByIP();
 					return;
 				}
-				
-				fetchSunByIP();
 
-				/*navigator.geolocation.getCurrentPosition(
+				navigator.geolocation.getCurrentPosition(
 					(pos) => fetchSunByCoords(pos.coords.latitude, pos.coords.longitude),
 					(err) => {
 						if (err.code === err.PERMISSION_DENIED) {
@@ -397,7 +396,7 @@ ready(function() {
 						}
 						fetchSunByIP();
 					}
-				);*/
+				);
 			};
 
 			fetchSunData(true);
