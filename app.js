@@ -286,7 +286,7 @@ ready(function() {
 					try {
 						const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=fr`);
 						const data = await response.json();
-						let city = data.city || data.locality || "Ville inconnue";
+						let city = data.localityInfo.administrative[2].name || data.city || data.locality || "Ville inconnue";
 						let country = data.countryName || "Pays inconnu";
 						country = country.split('(')[0].trim();
 						return `${city} | ${country}`;
@@ -368,7 +368,7 @@ ready(function() {
 							return fetchSunByCoords(parseFloat(lat), parseFloat(lng));
 						})
 						.catch((err) => {
-							if (parsed.loc) {
+							if (parsed?.loc) {
 								const [lat, lng] = parsed.loc.split(",");
 								return fetchSunByCoords(lat, lng);
 							}
