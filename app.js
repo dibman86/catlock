@@ -319,13 +319,12 @@ ready(function() {
 					if (parsed) {
 						sunData.sunrise = new Date(parsed.sunrise);
 						sunData.sunset = new Date(parsed.sunset);
-						locationName.textContent = parsed.name;
+						locationName.textContent = parsed.city;
 					} else {
 						sunData.sunrise = new Date();
 						sunData.sunrise.setHours(config.sunrise.h, config.sunrise.m);
 						sunData.sunset = new Date();
 						sunData.sunset.setHours(config.sunset.h, config.sunset.m);
-						locationName.textContent = "Lieu inconnu";
 					}
 					updateTheme();
 				};
