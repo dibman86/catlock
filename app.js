@@ -383,7 +383,7 @@ ready(function() {
 				}
 
 				navigator.geolocation.getCurrentPosition(
-					(pos) => fetchSunByCoords(pos.coords.latitude, pos.coords.longitude),
+					(pos) => fetchSunByCoords(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
 					(err) => {
 						if (err.code === err.PERMISSION_DENIED) {
 							safeSetItem(STORAGE_KEY, Date.now());
