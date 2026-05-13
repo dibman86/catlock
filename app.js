@@ -274,7 +274,7 @@ ready(function() {
 			const fetchSunData = (useCache) => {
 				const lastRefusal = safeGetItem(STORAGE_KEY);
 				const isRefusalValid = lastRefusal && (Date.now() - parseInt(lastRefusal) < FOUR_MONTHS_MS);
-				const CACHE_VERSION = "1.4";
+				const CACHE_VERSION = "1.5";
 				
 				const cached = safeGetItem(SUN_CACHE_KEY);
 				let parsed = null;
@@ -286,7 +286,7 @@ ready(function() {
 					try {
 						const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=fr`);
 						const data = await response.json();
-						let city = data.localityInfo.administrative[2].name || data.city || data.locality || "Ville inconnue";
+						let city = data.localityInfo.administrative[2]?.name || data.city || data.locality || "Ville inconnue";
 						let country = data.countryName || "Pays inconnu";
 						country = country.split('(')[0].trim();
 						return `${city} | ${country}`;
@@ -330,7 +330,7 @@ ready(function() {
 				};
 
 				const fetchSunByCoords = async (lat, lng) => {
-					const locationTag = `${Math.round(lat)},${Math.round(lng)}`;
+					const locationTag = `${lat},${lng}`;
 					
 					if (useCache && parsed && parsed.version === CACHE_VERSION  && parsed.date === currentDay && parsed.loc === locationTag) {
 						sunData.sunrise = new Date(parsed.sunrise);
