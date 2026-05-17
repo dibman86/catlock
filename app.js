@@ -92,10 +92,9 @@ ready(function() {
 			let sunData = { sunrise: null, sunset: null };
 			let currentDay = new Date().toLocaleDateString('sv-SE');
 			
-			let config = {
-				sunrise: { h: 7, m: 00 },
-				sunset: { h: 18, m: 30 }
-			};
+			console.log(birthdays)
+			console.log(coordonner)
+			console.log(timeConfig)
 			
 			const safeGetItem = (key) => {return localStorage.getItem(key);};
 			const safeSetItem = (key, value) => {localStorage.setItem(key, value);};
@@ -322,9 +321,10 @@ ready(function() {
 						locationName.textContent = parsed.city;
 					} else {
 						sunData.sunrise = new Date();
-						sunData.sunrise.setHours(config.sunrise.h, config.sunrise.m);
+						sunData.sunrise.setHours(timeConfig.sunrise.h, timeConfig.sunrise.m);
 						sunData.sunset = new Date();
-						sunData.sunset.setHours(config.sunset.h, config.sunset.m);
+						sunData.sunset.setHours(timeConfig.sunset.h, timeConfig.sunset.m);
+						if (coordonner?.city) locationName = coordonner.city;
 					}
 					updateTheme();
 				};
@@ -369,6 +369,10 @@ ready(function() {
 						.catch((err) => {
 							if (parsed?.loc) {
 								const [lat, lng] = parsed.loc.split(",");
+								return fetchSunByCoords(lat, lng);
+							}
+							if (coordonner?.loc){
+								const [lat, lng] = coordonner.loc.split(",");
 								return fetchSunByCoords(lat, lng);
 							}
 							console.warn("Échec de la récupération des Coordonnées, application du fallback:", err);
