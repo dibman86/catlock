@@ -92,10 +92,6 @@ ready(function() {
 			let sunData = { sunrise: null, sunset: null };
 			let currentDay = new Date().toLocaleDateString('sv-SE');
 			
-			console.log(birthdays)
-			console.log(coordonner)
-			console.log(timeConfig)
-			
 			const safeGetItem = (key) => {return localStorage.getItem(key);};
 			const safeSetItem = (key, value) => {localStorage.setItem(key, value);};
 				
