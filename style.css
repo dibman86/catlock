@@ -505,13 +505,13 @@
 			animation: remuer 2s ease-in-out infinite;
 		}
 		
+		.day #cat-queut {
+			border-top: 3rem solid #000;
+		}
+		
 		#cat-queut.stop {
 			animation: none;
 			border-radius: 50% 50% 0 0;
-		}
-		
-		.day #cat-queut {
-			border-top: 3rem solid #000;
 		}
 		
 		.is-hiding #cat-queut {
