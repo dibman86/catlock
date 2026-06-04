@@ -488,18 +488,27 @@
            bottom: -20%;
         }
 		
-		#cat-queut {
+		#cat-global-body,#cat-queut {
 			position: absolute;
-			bottom: 52%;
+			bottom: -10%;
 			left: 0;
 			right: 0;
 			margin: auto;
-			width: 25px;
-			height: 250px;
 			border: 2px solid var(--color-secondary);
-			border-radius: 20px 20px 0 0;
 			background: var(--color-primary);
 			z-index: 10;
+		}
+		
+		#cat-global-body {
+			width: 120px;
+			height: 120px;
+			border-radius: 100% ;
+		}
+		
+		#cat-queut {
+			width: 25px;
+			height: 250px;
+			border-radius: 20px 20px 0 0;
 			transform-origin: bottom;
 			transition: bottom .2s ease-in-out,border-radius .2s ease-in-out,background-color 1s ease,border-color 1s ease;
 			animation: remuer 2s ease-in-out infinite;
@@ -517,7 +526,7 @@
 		.is-hiding #cat-queut {
            animation-play-state: paused!important;
 			animation : none!important;
-			bottom: 54%;
+			bottom: 0;
 			border-radius: 50% 50% 0 0!important;
         }
 		
