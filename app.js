@@ -22,7 +22,7 @@ ready(function() {
 		let isOverHitbox = null;
 		let clockTimer = null;
 		let timeout= null;
-		let containerRect = container.getBoundingClientRect();
+		const containerRect = container.getBoundingClientRect();
 		
 		const cloudLayer = document.getElementById('clouds');
 
@@ -206,12 +206,13 @@ ready(function() {
 				const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
 				const formatter = new Intl.DateTimeFormat('fr-FR', options);
 				const parts = formatter.formatToParts(now);
+				const getPart = (type) => parts.find(p => p.type === type).value;
 
 				const dateObj = {
-					weekday: parts.find(p => p.type === 'weekday').value,
-					day: parts.find(p => p.type === 'day').value,
-					month: parts.find(p => p.type === 'month').value,
-					year: parts.find(p => p.type === 'year').value
+					weekday: getPart('weekday'),
+					day: getPart('day'),
+					month: getPart('month'),
+					year: getPart('year')
 				};
 				
 				const globalDataTime = {
