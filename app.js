@@ -22,7 +22,6 @@ ready(function() {
 		let isOverHitbox = null;
 		let clockTimer = null;
 		let timeout= null;
-		const containerRect = container.getBoundingClientRect();
 		
 		const cloudLayer = document.getElementById('clouds');
 
@@ -515,17 +514,24 @@ ready(function() {
 		main.addEventListener('touchcancel', resetState);
 		
         function updatePupil(pupil, originX, originY, mouseX, mouseY) {
-            const eyeX = containerRect.left + originX;
-            const eyeY = containerRect.top + originY;
-            
-            const angle = Math.atan2(mouseY - eyeY, mouseX - eyeX);
-            const dist = Math.sqrt(Math.pow(mouseX-eyeX, 2) + Math.pow(mouseY-eyeY, 2));
-            
-            const maxMove = 8;
-            const move = Math.min(dist, maxMove);
+            const svgRect = cat.getBoundingClientRect();
+			
+			const scaleX = svgRect.width / 220;
+			const scaleY = svgRect.height / 160;
+			
+			const eyeX = svgRect.left + (originX * scaleX);
+			const eyeY = svgRect.top + (originY * scaleY);
 
-            pupil.setAttribute('cx', originX + Math.cos(angle) * move);
-            pupil.setAttribute('cy', originY + Math.sin(angle) * move);
+			const deltaX = mouseX - eyeX;
+			const deltaY = mouseY - eyeY;
+			const angle = Math.atan2(deltaY, deltaX);
+			const dist = Math.hypot(deltaX, deltaY);
+
+			const maxMove = 8;
+			const move = Math.min(dist / (20 * scaleX), maxMove);
+
+			pupil.setAttribute('cx', originX + Math.cos(angle) * move);
+			pupil.setAttribute('cy', originY + Math.sin(angle) * move);
         }
 		
 		startThemeEngine();
