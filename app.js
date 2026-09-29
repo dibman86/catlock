@@ -522,7 +522,7 @@ ready(function() {
             const dist = Math.sqrt(Math.pow(mouseX-eyeX, 2) + Math.pow(mouseY-eyeY, 2));
             
             const maxMove = 8;
-            const move = Math.min(dist * 0.04, maxMove);
+            const move = Math.min(dist, maxMove);
 
             pupil.setAttribute('cx', originX + Math.cos(angle) * move);
             pupil.setAttribute('cy', originY + Math.sin(angle) * move);
