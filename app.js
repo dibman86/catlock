@@ -1,4 +1,18 @@
-ready(function() {	
+ready(function() {
+		const coordonner = {
+			"loc": "33.2568,-8.5088",
+			"city": "El Jadida | Maroc"
+		};
+		const timeConfig = {
+			sunrise: { h: 6, m: 30 },
+			sunset: { h: 19, m: 30 }
+		};
+		const birthdays = [
+			{ name: 'Issam', date: '19-10' },
+			{ name: 'Mamon', date: '04-04' },
+			{ name: 'Frère', date: '27-04' }
+		];
+		
 		const htmlEl = document.documentElement;
 		const main = document.getElementById("main-container");
 		const starContainer = document.getElementById('stars-container');
@@ -16,7 +30,6 @@ ready(function() {
 		const whiskersR = document.getElementById('whiskers-right');
 		const catQueut = document.getElementById('cat-queut');
 		const zzz = document.getElementById('zzz-container');
-		
 		let isHiding = false;
 		let isonscreen = false;
 		let isOverHitbox = null;
@@ -91,8 +104,22 @@ ready(function() {
 			let sunData = { sunrise: null, sunset: null };
 			let currentDay = new Date().toLocaleDateString('sv-SE');
 			
-			const safeGetItem = (key) => {return localStorage.getItem(key);};
-			const safeSetItem = (key, value) => {localStorage.setItem(key, value);};
+			function safeGetItem(key) {
+				try {
+					return localStorage.getItem(key);
+				} catch (error) {
+					console.warn("LocalStorage n'est pas accessible :", error);
+					return null;
+				}
+			}
+
+			function safeSetItem(key, value) {
+				try {
+					localStorage.setItem(key, value);
+				} catch (error) {
+					console.warn("Impossible de sauvegarder dans le LocalStorage :", error);
+				}
+			}
 				
 			const updateCelestialPosition = (d) => {
 				const orbitEl = document.getElementById("celestial-orbit");
@@ -196,7 +223,6 @@ ready(function() {
 			}
 
 			const updateTheme = () => {
-				if(clockTimer) clearTimeout(clockTimer)
 
 				const now = new Date();
 				const heure =  now.getHours();
@@ -233,7 +259,7 @@ ready(function() {
 				const sunsetEnd = new Date(sunData.sunset);
 				sunsetEnd.setMinutes(sunsetEnd.getMinutes() + 30);
 					
-				isDay = now >= sunData.sunrise && now < sunData.sunset;
+				isDay = now >= sunData.sunrise && now < sunsetEnd;
 				inSunrise = now >= sunriseEnd && now < sunData.sunrise;
 				inSunset = now >= sunData.sunset && now < sunsetEnd;
 				isNightTime = now >= sunData.sunset || now < sunriseEnd;
@@ -254,6 +280,7 @@ ready(function() {
 				updateClock(globalDataTime);
 				updateCelestialPosition(now);
 				
+				if(clockTimer) clearTimeout(clockTimer);
 				clockTimer = setTimeout(() => {
 					if(document.body.classList.contains("ready")) document.body.classList.remove("ready");
 					if(!htmlEl.classList.contains("open-page")) htmlEl.classList.add("open-page");
